@@ -1,0 +1,4285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AMIA Machineries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --ink: #1A1F36;
+    --text-muted: #6B7280;
+    --paper: #F5F6F8;
+    --paper-line: #E4E7EC;
+    --paper-card: #FFFFFF;
+    --mustard: #E8A33D;
+    --mustard-tint: #FBF1DF;
+    --mustard-dark: #8A5A12;
+    --rust: #DC4C3E;
+    --rust-tint: #FBEAE8;
+    --rust-dark: #8B2F26;
+    --sage: #12A594;
+    --sage-tint: #E3F5F3;
+    --sage-dark: #0E6F63;
+    --shadow: 0 1px 2px rgba(16,24,40,0.04), 0 4px 14px rgba(16,24,40,0.05);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    display: flex;
+    background: var(--paper);
+  }
+
+  .hidden { display: none !important; }
+
+  /* ---------- Login screen ---------- */
+  .login-screen {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background: var(--paper);
+    padding: 20px;
+  }
+
+  .login-card {
+    max-width: 380px;
+    width: 100%;
+    margin-top: 80px;
+    background: var(--paper-card);
+    border: 1px solid var(--paper-line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+
+  .login-card h2 {
+    font-weight: 700;
+    margin: 0 0 6px;
+    font-size: 1.4rem;
+    color: var(--ink);
+  }
+
+  .login-brand {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .login-logo {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .login-brand-title {
+    font-weight: 700;
+    font-size: 1.7rem;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+  }
+
+  .login-brand-subtitle {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .login-card p.sub {
+    margin: 0 0 24px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .field { margin-bottom: 16px; }
+
+  .field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .field input, .field select {
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    padding: 10px 12px;
+    border: 1px solid var(--paper-line);
+    background: #fff;
+    color: var(--ink);
+    border-radius: 8px;
+    outline: none;
+  }
+
+  .field input:focus, .field select:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(18, 165, 148, 0.15);
+  }
+
+  .field input[type="file"] {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .field-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .existing-attachment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--paper);
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+  }
+
+  .existing-attachment a {
+    color: var(--sage-dark);
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .existing-attachment a:hover { text-decoration: underline; }
+
+  .attachment-remove-btn {
+    background: none;
+    border: none;
+    color: var(--rust);
+    font-size: 0.78rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+  }
+  .attachment-remove-btn:hover { text-decoration: underline; }
+
+  .attachment-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--sage-dark);
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .attachment-link:hover { text-decoration: underline; }
+
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 12px 20px;
+    background: var(--sage);
+    color: #fff;
+    border: 1px solid var(--sage);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .btn:hover { background: var(--sage-dark); border-color: var(--sage-dark); }
+  .btn:active { transform: translateY(1px); }
+  .btn.full { width: 100%; }
+
+  .btn.btn-sm {
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    border-radius: 6px;
+  }
+
+  .btn.subtle {
+    background: #fff;
+    color: var(--ink);
+    border-color: var(--paper-line);
+  }
+  .btn.subtle:hover { background: var(--paper); }
+
+  .form-error {
+    color: var(--rust);
+    font-size: 0.85rem;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ---------- App shell ---------- */
+  .app-shell {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--paper-card);
+    color: var(--ink);
+    padding: 24px 14px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--paper-line);
+    transition: width 0.18s ease, padding 0.18s ease;
+    position: relative;
+  }
+
+  .sidebar.collapsed {
+    width: 68px;
+    padding: 24px 10px;
+  }
+
+  .sidebar.collapsed .brand-text,
+  .sidebar.collapsed .nav-link span,
+  .sidebar.collapsed .signout-btn span,
+  .sidebar.collapsed .account-info,
+  .sidebar.collapsed .account-signout-icon,
+  .sidebar.collapsed .account-status-dot,
+  .sidebar.collapsed .account-panel {
+    display: none;
+  }
+
+  .sidebar.collapsed .brand,
+  .sidebar.collapsed .nav-link,
+  .sidebar.collapsed .signout-btn,
+  .sidebar.collapsed .account-row,
+  .sidebar.collapsed .account-toggle {
+    justify-content: center;
+  }
+
+  .sidebar-toggle {
+    position: absolute;
+    top: 40px;
+    right: -13px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--sage);
+    color: #fff;
+    border: 3px solid var(--paper-card);
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(16,24,40,0.18);
+    z-index: 30;
+    transition: background 0.15s ease;
+  }
+  .sidebar-toggle:hover { background: var(--sage-dark); }
+  .sidebar-toggle svg { width: 12px; height: 12px; transition: transform 0.18s ease; }
+  .sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+
+  .brand {
+    margin: 0 0 22px;
+    padding: 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+  }
+
+  .brand-logo {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .brand-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .brand-subtitle {
+    font-weight: 500;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+    user-select: none;
+  }
+
+  .nav-icon {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    color: currentColor;
+  }
+
+  .nav-group-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 14px 12px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .sidebar.collapsed .nav-group-label { display: none; }
+
+  .nav-link:hover { color: var(--ink); background: var(--paper); }
+
+  .nav-link.active {
+    background: var(--sage-tint);
+    color: var(--sage-dark);
+    font-weight: 600;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--paper-line);
+  }
+
+  .account-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .account-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .account-toggle:hover { background: var(--paper); }
+
+  .account-avatar-wrap { position: relative; flex-shrink: 0; }
+
+  .account-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--sage-tint);
+    color: var(--sage-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 2px solid var(--paper-card);
+    box-shadow: 0 2px 6px rgba(16,24,40,0.18), 0 0 0 1px var(--paper-line);
+  }
+
+  .account-status-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid var(--paper-card);
+  }
+
+  .account-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .account-signout-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .account-signout-icon:hover { background: var(--rust-tint); color: var(--rust-dark); }
+  .account-signout-icon svg { width: 16px; height: 16px; }
+
+  .account-panel {
+    padding: 10px 6px 2px;
+  }
+
+  .account-panel-badge { margin-bottom: 8px; }
+
+  .sidebar-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar-email {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .role-badge {
+    display: inline-block;
+    width: fit-content;
+    font-size: 0.64rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 20px;
+    color: var(--ink);
+    background: var(--paper-line);
+  }
+
+  .role-badge.admin { background: var(--mustard-tint); color: var(--mustard-dark); }
+  .role-badge.superadmin { background: var(--rust-tint); color: var(--rust-dark); }
+
+  .signout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--rust);
+    font-size: 0.88rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    padding: 9px 12px;
+    border-radius: 8px;
+    text-align: left;
+  }
+  .signout-btn:hover { background: var(--rust-tint); }
+  .signout-btn .nav-icon { color: currentColor; }
+
+  .signout-btn.account-action {
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  .signout-btn.account-action:hover { background: var(--paper); color: var(--ink); }
+
+  .main-content {
+    flex: 1;
+    background: var(--paper);
+    padding: 32px 40px 60px;
+    overflow-y: auto;
+    min-width: 0;
+  }
+
+  .page { display: none; width: 100%; }
+  .page.active { display: block; }
+
+  .page-header {
+    margin-bottom: 26px;
+    border-bottom: 1px solid var(--paper-line);
+    padding-bottom: 16px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .page-header h1 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .date { font-size: 0.85rem; color: var(--text-muted); }
+
+  form.inline-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+  }
+
+  form.inline-form input[type="text"], form.inline-form select {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    padding: 11px 14px;
+    border: 1px solid var(--paper-line);
+    background: var(--paper-card);
+    color: var(--ink);
+    border-radius: 8px;
+    outline: none;
+  }
+
+  form.inline-form input[type="text"] { flex: 1; min-width: 160px; }
+
+  form.inline-form input[type="text"]:focus, form.inline-form select:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(18, 165, 148, 0.15);
+  }
+
+  /* ---------- List items (legacy, unused styles kept for now) ---------- */
+  ul.list { list-style: none; margin: 0; padding: 0; }
+
+  li.item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 13px 4px;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  li.item:first-child { border-top: 1px solid var(--paper-line); }
+
+  .check {
+    flex-shrink: 0;
+    width: 21px;
+    height: 21px;
+    margin-top: 2px;
+    border: 1.5px solid var(--paper-line);
+    border-radius: 6px;
+    background: var(--paper-card);
+    cursor: pointer;
+    position: relative;
+  }
+  .check.done { background: var(--sage); border-color: var(--sage); }
+  .check.done::after {
+    content: "";
+    position: absolute;
+    left: 6px; top: 2px;
+    width: 5px; height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(40deg);
+  }
+
+  .task-text { flex: 1; font-size: 0.98rem; line-height: 1.4; word-break: break-word; color: var(--ink); }
+  .task-text.done {
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+    opacity: 0.55;
+  }
+
+  .delete-btn {
+    flex-shrink: 0;
+    background: none; border: none;
+    color: var(--rust);
+    font-size: 1.2rem; line-height: 1;
+    cursor: pointer;
+    padding: 2px 6px;
+    opacity: 0.55;
+    transition: opacity 0.15s ease;
+  }
+  .delete-btn:hover { opacity: 1; }
+
+  .owner-tag { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+  .empty {
+    text-align: center;
+    padding: 40px 10px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .footer-count { margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); }
+
+  .status-banner {
+    background: var(--rust-tint);
+    border: 1px solid var(--rust);
+    color: var(--rust-dark);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+  .status-banner code { background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; }
+
+  /* ---------- Tables (machinery / users) ---------- */
+  .table-card {
+    background: var(--paper-card);
+    border: 1px solid var(--paper-line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .table-toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--paper-line);
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 180px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    padding: 8px 12px;
+    border: 1px solid var(--paper-line);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 7px;
+    outline: none;
+  }
+  .search-input:focus {
+    border-color: var(--sage);
+    box-shadow: 0 0 0 3px rgba(18, 165, 148, 0.15);
+    background: var(--paper-card);
+  }
+
+  .filter-select {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    padding: 8px 10px;
+    border: 1px solid var(--paper-line);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 7px;
+    outline: none;
+  }
+
+  .table-scroll { overflow-x: auto; }
+
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table.data-table th {
+    text-align: left;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--paper-line);
+    white-space: nowrap;
+  }
+
+  table.data-table th.sortable { cursor: pointer; user-select: none; }
+  table.data-table th.sortable:hover { color: var(--ink); }
+
+  .sort-arrow {
+    display: inline-block;
+    font-size: 0.65rem;
+    margin-left: 2px;
+    color: var(--sage);
+  }
+  .sort-arrow.asc::after { content: '▲'; }
+  .sort-arrow.desc::after { content: '▼'; }
+
+  table.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--paper-line);
+    font-size: 0.88rem;
+    vertical-align: middle;
+    color: var(--ink);
+  }
+
+  table.data-table tbody tr:last-child td { border-bottom: none; }
+  table.data-table tbody tr:hover { background: var(--paper); }
+
+  .table-footer {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--paper-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pagination-btn {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--paper-line);
+    background: var(--paper-card);
+    color: var(--ink);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0;
+  }
+  .pagination-btn:hover:not(:disabled) { border-color: var(--sage); color: var(--sage-dark); }
+  .pagination-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .pagination-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .editable-text {
+    cursor: text;
+    border-bottom: 1px dashed transparent;
+  }
+  .editable-text:hover { border-bottom-color: var(--paper-line); }
+
+  .status-pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    padding: 4px 11px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+  }
+  .status-pill.available { background: var(--sage-tint); color: var(--sage-dark); }
+  .status-pill.in-use { background: var(--mustard-tint); color: var(--mustard-dark); }
+  .status-pill.maintenance { background: var(--rust-tint); color: var(--rust-dark); }
+
+  .disabled-pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 11px;
+    border-radius: 20px;
+    background: var(--paper-line);
+    color: var(--text-muted);
+  }
+  .disabled-pill.active { background: var(--sage-tint); color: var(--sage-dark); }
+  .disabled-pill.inactive { background: var(--rust-tint); color: var(--rust-dark); }
+
+  .row-actions { display: flex; gap: 8px; align-items: center; }
+
+  select.role-select {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    padding: 5px 8px;
+    border: 1px solid var(--paper-line);
+    background: var(--paper-card);
+    color: var(--ink);
+    border-radius: 6px;
+  }
+
+  .action-btn {
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--paper-line);
+    background: var(--paper-card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .action-btn:hover { border-color: var(--sage); color: var(--sage-dark); }
+  .action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .action-btn:disabled:hover { border-color: var(--paper-line); color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  /* ---------- Dashboard ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: var(--paper-card);
+    border: 1px solid var(--paper-line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 18px 20px;
+  }
+
+  .stat-card .stat-value {
+    font-weight: 700;
+    font-size: 1.8rem;
+    line-height: 1;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .stat-card:nth-child(3) .stat-value { color: var(--sage); }
+  .stat-card:nth-child(4) .stat-value { color: var(--rust); }
+
+  .stat-card .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .panel {
+    background: var(--paper-card);
+    border: 1px solid var(--paper-line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 20px 22px;
+  }
+
+  .panel h3 {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 16px;
+    color: var(--ink);
+  }
+
+  .panel-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 160px;
+    border: 1px dashed var(--paper-line);
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .chart-empty {
+    padding: 30px 10px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  /* Breakdown bars */
+  .breakdown-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .breakdown-row:last-child { margin-bottom: 0; }
+
+  .breakdown-label {
+    width: 90px;
+    flex-shrink: 0;
+    font-size: 0.82rem;
+    color: var(--ink);
+    text-transform: capitalize;
+  }
+
+  .breakdown-track {
+    flex: 1;
+    height: 10px;
+    background: var(--paper);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .breakdown-fill {
+    height: 100%;
+    border-radius: 6px;
+  }
+
+  .breakdown-count {
+    width: 28px;
+    text-align: right;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+
+  /* Donut */
+  .donut-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 10px 0;
+  }
+
+  .donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .donut-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--ink);
+  }
+
+  .donut-legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .donut-legend-count {
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .donut-svg-wrap { position: relative; flex-shrink: 0; }
+
+  .donut-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .donut-center-value {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--ink);
+  }
+
+  .donut-center-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  /* Trend bars */
+  .trend-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    min-height: 160px;
+    padding: 10px 4px 0;
+  }
+
+  .trend-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .trend-bar-value {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    min-height: 14px;
+  }
+
+  .trend-bar {
+    width: 70%;
+    max-width: 22px;
+    background: var(--sage);
+    border-radius: 4px 4px 0 0;
+    min-height: 3px;
+  }
+
+  .trend-bar-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .panel-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Modals ---------- */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 24, 40, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .modal-card {
+    background: var(--paper-card);
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(16,24,40,0.25);
+    padding: 24px 26px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-card-sm { max-width: 360px; }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 6px;
+  }
+  .modal-close:hover { color: var(--ink); }
+
+  .modal-message {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    margin: 0 0 20px;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .btn-danger {
+    background: var(--rust);
+    border-color: var(--rust);
+    color: #fff;
+  }
+  .btn-danger:hover { background: var(--rust-dark); border-color: var(--rust-dark); }
+
+  .trash-icon { width: 16px; height: 16px; }
+  .edit-icon { width: 15px; height: 15px; }
+
+  .row-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 5px;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+  }
+  .row-icon-btn:hover { background: var(--paper); color: var(--ink); }
+  .row-icon-btn.danger:hover { color: var(--rust); }
+
+  /* ---------- Toasts ---------- */
+  .toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 340px;
+  }
+
+  .toast {
+    background: var(--paper-card);
+    border: 1px solid var(--paper-line);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(16,24,40,0.12);
+    padding: 16px 16px 16px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(0); }
+
+  .toast-icon-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .toast-icon-circle.success { background: var(--sage-tint); color: var(--sage-dark); }
+  .toast-icon-circle.error { background: var(--rust-tint); color: var(--rust-dark); }
+
+  .toast-content { flex: 1; min-width: 0; }
+
+  .toast-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .toast-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+  }
+
+  .toast-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 4px;
+    flex-shrink: 0;
+  }
+  .toast-close:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+  <!-- ============ LOGIN SCREEN ============ -->
+  <div id="login-screen" class="login-screen hidden">
+    <div class="login-card">
+      <div id="config-warning" class="status-banner hidden">
+        Set your Supabase URL and anon key in <code>index.html</code> (look for
+        <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> near the top of the script) before this will load or save data.
+      </div>
+      <div class="login-brand">
+        <svg class="login-logo" viewBox="0 0 32 32" fill="none">
+          <path d="M16 2L28 8.5V23.5L16 30L4 23.5V8.5L16 2Z" fill="var(--sage-tint)" stroke="var(--sage-dark)" stroke-width="1"/>
+          <path d="M16 2L28 8.5L16 15L4 8.5L16 2Z" fill="var(--sage)"/>
+          <path d="M16 15L28 8.5V23.5L16 30V15Z" fill="var(--sage-dark)"/>
+          <path d="M16 15L4 8.5V23.5L16 30V15Z" fill="var(--sage)" fill-opacity="0.75"/>
+        </svg>
+        <div class="login-brand-title">AIM</div>
+        <div class="login-brand-subtitle">AMIA Intervention Monitoring</div>
+      </div>
+      <h2>Sign in</h2>
+      <p class="sub">Enter your credentials to continue.</p>
+      <form id="login-form">
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" autocomplete="username" required />
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="btn full">Log in</button>
+        <div class="form-error" id="login-error"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ APP SHELL ============ -->
+  <div id="app-shell" class="app-shell hidden">
+    <nav class="sidebar">
+      <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse sidebar">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M12.5 4L7 10l5.5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 32 32" fill="none">
+          <path d="M16 2L28 8.5V23.5L16 30L4 23.5V8.5L16 2Z" fill="var(--sage-tint)" stroke="var(--sage-dark)" stroke-width="1"/>
+          <path d="M16 2L28 8.5L16 15L4 8.5L16 2Z" fill="var(--sage)"/>
+          <path d="M16 15L28 8.5V23.5L16 30V15Z" fill="var(--sage-dark)"/>
+          <path d="M16 15L4 8.5V23.5L16 30V15Z" fill="var(--sage)" fill-opacity="0.75"/>
+        </svg>
+        <div class="brand-text">
+          <div class="brand-title">AMIA</div>
+          <div class="brand-subtitle">Intervention Monitoring</div>
+        </div>
+      </div>
+
+      <div class="nav-link active" data-page="dashboard">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="2.5" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="2.5" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="2.5" y="11" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6.5" height="6.5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-group-label">General</div>
+      <div class="nav-link" data-page="machinery">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M10 3l1.2 2.2 2.4.5-1.7 1.8.3 2.5-2.2-1.1-2.2 1.1.3-2.5-1.7-1.8 2.4-.5L10 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M5 12.5h10v3a1 1 0 01-1 1H6a1 1 0 01-1-1v-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>Machineries</span>
+      </div>
+      <div class="nav-link" data-page="associations">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M4 17V6.5L10 3l6 3.5V17" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7.5 17v-4h5v4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 17h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Associations</span>
+      </div>
+      <div class="nav-link" data-page="agri-input">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><path d="M10 17s-6-4-6-8.5A4 4 0 0110 5a4 4 0 016 3.5C16 13 10 17 10 17z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 12V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Agri Inputs</span>
+      </div>
+
+      <div class="nav-group-label">Inventory</div>
+      <div class="nav-link" data-page="inventory">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="13" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 8h14" stroke="currentColor" stroke-width="1.5"/><path d="M7 4v-.5A1.5 1.5 0 018.5 2h3A1.5 1.5 0 0113 3.5V4" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>Machinery Inputs</span>
+      </div>
+      <div class="nav-link" data-page="agri-inv">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="13" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 8h14" stroke="currentColor" stroke-width="1.5"/><path d="M7 4v-.5A1.5 1.5 0 018.5 2h3A1.5 1.5 0 0113 3.5V4" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>Agricultural Inputs</span>
+      </div>
+
+      <div class="nav-group-label hidden" id="nav-admin-label">Admin</div>
+      <div class="nav-link hidden" data-page="users" id="nav-users">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><circle cx="7.5" cy="6.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 16c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="7" r="2" stroke="currentColor" stroke-width="1.5"/><path d="M13 12.3c1.9.3 3.5 1.6 3.5 3.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Users</span>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="account-row">
+          <button class="account-toggle" id="account-toggle" title="Account options">
+            <div class="account-avatar-wrap">
+              <div class="account-avatar" id="account-avatar"></div>
+              <span class="account-status-dot"></span>
+            </div>
+            <div class="account-info">
+              <div class="sidebar-name" id="sidebar-name"></div>
+              <div class="sidebar-email" id="sidebar-email"></div>
+            </div>
+          </button>
+          <button class="account-signout-icon" id="signout-btn" title="Sign out">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M8 3.5H5a1.5 1.5 0 00-1.5 1.5v10A1.5 1.5 0 005 16.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 13.5l3.5-3.5-3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.3 10H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="account-panel hidden" id="account-panel">
+          <div class="account-panel-badge"><span class="role-badge" id="role-badge"></span></div>
+          <button class="signout-btn account-action" id="edit-profile-btn">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6.5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 16c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Edit profile</span>
+          </button>
+          <button class="signout-btn account-action" id="change-password-btn">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="none"><circle cx="7" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9.5L16.5 16.5M13.5 16.5L16.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span>Change password</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ---------- Edit Profile Modal ---------- -->
+    <div id="profile-modal-backdrop" class="modal-backdrop hidden">
+      <div class="modal-card modal-card-sm">
+        <div class="modal-header">
+          <h3>Edit Profile</h3>
+          <button class="modal-close" id="profile-modal-close" type="button">&times;</button>
+        </div>
+        <form id="profile-form">
+          <div class="field">
+            <label for="profile-full-name">Full Name</label>
+            <input type="text" id="profile-full-name" autocomplete="off" />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn subtle" id="profile-modal-cancel">Cancel</button>
+            <button type="submit" class="btn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <main class="main-content">
+
+      <!-- ---------- Page: Dashboard ---------- -->
+      <section class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1>Dashboard</h1>
+          <span class="date" id="dashboard-date"></span>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">—</div>
+            <div class="stat-label">Inventory records</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">—</div>
+            <div class="stat-label">Machineries listed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">—</div>
+            <div class="stat-label">Total users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">—</div>
+            <div class="stat-label">Pending / flagged</div>
+          </div>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel">
+            <h3>Machineries by Status</h3>
+            <div id="breakdown-chart" class="chart-empty hidden">No machinery data yet.</div>
+            <div id="breakdown-bars"></div>
+          </div>
+          <div class="panel">
+            <h3>Inventory Status Overview</h3>
+            <div id="status-empty" class="chart-empty hidden">No inventory data yet.</div>
+            <div id="status-donut-wrap" class="donut-wrap">
+              <div class="donut-svg-wrap">
+                <svg id="status-donut" viewBox="0 0 120 120" width="140" height="140"></svg>
+                <div class="donut-center">
+                  <div class="donut-center-value" id="donut-center-value">0</div>
+                  <div class="donut-center-label">records</div>
+                </div>
+              </div>
+              <div id="status-legend" class="donut-legend"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Inventory Records — last 12 months</h3>
+          <div id="trend-empty" class="chart-empty hidden">No inventory data yet.</div>
+          <div id="trend-chart" class="trend-chart"></div>
+        </div>
+      </section>
+
+      <!-- ---------- Page: Machineries ---------- -->
+      <section class="page" id="page-machinery">
+        <div class="page-header">
+          <h1>Machineries</h1>
+          <button id="open-machinery-modal" class="btn btn-sm hidden">+ Add Machinery</button>
+        </div>
+
+        <div class="table-card">
+          <div class="table-toolbar">
+            <input type="text" id="machinery-search" class="search-input" placeholder="Search name or type…" />
+            <select id="machinery-status-filter" class="filter-select">
+              <option value="">All status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="name">Name <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="type">Type <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="status">Status <span class="sort-arrow"></span></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="machinery-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="machinery-count"></span><div class="pagination" id="machinery-pagination"></div></div>
+        </div>
+        <div class="empty hidden" id="machinery-empty">No machinery listed yet. Add the first one above.</div>
+      </section>
+
+      <!-- ---------- Machinery Add/Edit Modal ---------- -->
+      <div id="machinery-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="machinery-modal-title">Add Machinery</h3>
+            <button class="modal-close" id="machinery-modal-close" type="button">&times;</button>
+          </div>
+          <form id="machinery-form">
+            <div class="field">
+              <label for="machinery-name">Name</label>
+              <input type="text" id="machinery-name" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="machinery-type">Type / category</label>
+              <input type="text" id="machinery-type" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="machinery-status">Status</label>
+              <select id="machinery-status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn subtle" id="machinery-modal-cancel">Cancel</button>
+              <button type="submit" class="btn" id="machinery-modal-submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ---------- Page: Agri Input ---------- -->
+      <section class="page" id="page-agri-input">
+        <div class="page-header">
+          <h1>Agri Input</h1>
+          <button id="open-agri-input-modal" class="btn btn-sm hidden">+ Add Agri Input</button>
+        </div>
+
+        <div class="table-card">
+          <div class="table-toolbar">
+            <input type="text" id="agri-input-search" class="search-input" placeholder="Search name or type…" />
+            <select id="agri-input-status-filter" class="filter-select">
+              <option value="">All status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="name">Name <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="type">Type <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="status">Status <span class="sort-arrow"></span></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="agri-input-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="agri-input-count"></span><div class="pagination" id="agri-input-pagination"></div></div>
+        </div>
+        <div class="empty hidden" id="agri-input-empty">No agri input items listed yet. Add the first one above.</div>
+      </section>
+
+      <!-- ---------- Agri Input Add/Edit Modal ---------- -->
+      <div id="agri-input-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="agri-input-modal-title">Add Agri Input</h3>
+            <button class="modal-close" id="agri-input-modal-close" type="button">&times;</button>
+          </div>
+          <form id="agri-input-form">
+            <div class="field">
+              <label for="agri-input-name">Name</label>
+              <input type="text" id="agri-input-name" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="agri-input-type">Type / category</label>
+              <input type="text" id="agri-input-type" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="agri-input-status">Status</label>
+              <select id="agri-input-status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn subtle" id="agri-input-modal-cancel">Cancel</button>
+              <button type="submit" class="btn" id="agri-input-modal-submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ---------- Page: Associations ---------- -->
+      <section class="page" id="page-associations">
+        <div class="page-header">
+          <h1>Associations</h1>
+          <button id="open-association-modal" class="btn btn-sm hidden">+ Add Association</button>
+        </div>
+
+        <div class="table-card">
+          <div class="table-toolbar">
+            <input type="text" id="association-search" class="search-input" placeholder="Search association, province, municipality, or barangay…" />
+            <select id="association-status-filter" class="filter-select">
+              <option value="">All status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="association">Association <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="province">Province <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="municipality">Municipality <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="barangay">Barangay <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="status">Status <span class="sort-arrow"></span></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="association-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="association-count"></span><div class="pagination" id="association-pagination"></div></div>
+        </div>
+        <div class="empty hidden" id="association-empty">No associations listed yet.</div>
+      </section>
+
+      <!-- ---------- Association Add/Edit Modal ---------- -->
+      <div id="association-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="association-modal-title">Add Association</h3>
+            <button class="modal-close" id="association-modal-close" type="button">&times;</button>
+          </div>
+          <form id="association-form">
+            <div class="field">
+              <label for="association-name">Association</label>
+              <input type="text" id="association-name" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="association-province">Province</label>
+              <input type="text" id="association-province" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="association-municipality">Municipality</label>
+              <input type="text" id="association-municipality" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="association-barangay">Barangay</label>
+              <input type="text" id="association-barangay" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="association-status">Status</label>
+              <select id="association-status">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn subtle" id="association-modal-cancel">Cancel</button>
+              <button type="submit" class="btn" id="association-modal-submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ---------- Delete Confirmation Modal ---------- -->
+      <div id="confirm-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card modal-card-sm">
+          <div class="modal-header">
+            <h3 id="confirm-modal-title">Delete record?</h3>
+          </div>
+          <p id="confirm-modal-message" class="modal-message"></p>
+          <div class="modal-actions">
+            <button type="button" class="btn subtle" id="confirm-modal-cancel">Cancel</button>
+            <button type="button" class="btn btn-danger" id="confirm-modal-confirm">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Toast container ---------- -->
+      <div id="toast-container" class="toast-container"></div>
+
+      <!-- ---------- Page: Machine Inventory ---------- -->
+      <section class="page" id="page-inventory">
+        <div class="page-header">
+          <h1>Machine Inventory</h1>
+          <button id="open-inventory-modal" class="btn btn-sm">+ Add Inventory</button>
+        </div>
+
+        <div class="table-card">
+          <div class="table-toolbar">
+            <input type="text" id="inventory-search" class="search-input" placeholder="Search document no., association, machinery, or remarks…" />
+            <select id="inventory-status-filter" class="filter-select">
+              <option value="">All status</option>
+              <option value="pending">Pending</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="document_no">Doc No. <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="associationName">Association <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="machineryName">Machinery <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="qty">Qty <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="amount">Amount <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="target_date">Target Date <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="date_delivered">Delivered <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="status">Status <span class="sort-arrow"></span></th>
+                  <th>Remarks</th>
+                  <th>File</th>
+                  <th>Lock</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="inventory-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="inventory-count"></span><div class="pagination" id="inventory-pagination"></div></div>
+        </div>
+        <div class="empty hidden" id="inventory-empty">No inventory records yet.</div>
+      </section>
+
+      <!-- ---------- Machine Inventory Add/Edit Modal ---------- -->
+      <div id="inventory-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="inventory-modal-title">Add Inventory Record</h3>
+            <button class="modal-close" id="inventory-modal-close" type="button">&times;</button>
+          </div>
+          <form id="inventory-form">
+            <div class="field">
+              <label for="inventory-document-no">Document No.</label>
+              <input type="text" id="inventory-document-no" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="inventory-association">Association *</label>
+              <select id="inventory-association" required></select>
+            </div>
+            <div class="field">
+              <label for="inventory-machinery">Machinery *</label>
+              <select id="inventory-machinery" required></select>
+            </div>
+            <div class="field">
+              <label for="inventory-qty">Quantity *</label>
+              <input type="number" id="inventory-qty" min="1" step="1" required />
+            </div>
+            <div class="field">
+              <label for="inventory-amount">Amount *</label>
+              <input type="number" id="inventory-amount" min="0" step="0.01" required />
+            </div>
+            <div class="field">
+              <label for="inventory-target-date">Target Date</label>
+              <input type="date" id="inventory-target-date" />
+            </div>
+            <div class="field">
+              <label for="inventory-date-delivered">Date Delivered</label>
+              <input type="date" id="inventory-date-delivered" />
+            </div>
+            <div class="field">
+              <label for="inventory-status">Status</label>
+              <select id="inventory-status">
+                <option value="">— None —</option>
+                <option value="pending">Pending</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="inventory-remarks">Remarks</label>
+              <input type="text" id="inventory-remarks" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="inventory-attachment">Attachment (PDF, optional)</label>
+              <div id="inventory-existing-attachment" class="existing-attachment hidden">
+                <a href="#" id="inventory-existing-attachment-link" target="_blank" rel="noopener">📄 <span id="inventory-existing-attachment-name"></span></a>
+                <button type="button" class="attachment-remove-btn" id="inventory-remove-attachment">Remove</button>
+              </div>
+              <input type="file" id="inventory-attachment" accept="application/pdf" />
+              <div class="field-hint">PDF only, up to 50 MB.</div>
+            </div>
+            <div class="field hidden" id="inventory-lock-field">
+              <label style="display:flex; align-items:center; gap:8px; font-weight:500;">
+                <input type="checkbox" id="inventory-locked" style="width:auto;" />
+                Locked (prevents regular users from editing this record)
+              </label>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn subtle" id="inventory-modal-cancel">Cancel</button>
+              <button type="submit" class="btn" id="inventory-modal-submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ---------- Page: Agricultural Inventory ---------- -->
+      <section class="page" id="page-agri-inv">
+        <div class="page-header">
+          <h1>Agricultural Inventory</h1>
+          <button id="open-agri-inv-modal" class="btn btn-sm">+ Add Inventory</button>
+        </div>
+
+        <div class="table-card">
+          <div class="table-toolbar">
+            <input type="text" id="agri-inv-search" class="search-input" placeholder="Search document no., association, agri input, or remarks…" />
+            <select id="agri-inv-status-filter" class="filter-select">
+              <option value="">All status</option>
+              <option value="pending">Pending</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="document_no">Doc No. <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="associationName">Association <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="agriInputName">Agri Input <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="qty">Qty <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="amount">Amount <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="target_date">Target Date <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="date_delivered">Delivered <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="status">Status <span class="sort-arrow"></span></th>
+                  <th>Remarks</th>
+                  <th>File</th>
+                  <th>Lock</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="agri-inv-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="agri-inv-count"></span><div class="pagination" id="agri-inv-pagination"></div></div>
+        </div>
+        <div class="empty hidden" id="agri-inv-empty">No inventory records yet.</div>
+      </section>
+
+      <!-- ---------- Agricultural Inventory Add/Edit Modal ---------- -->
+      <div id="agri-inv-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="agri-inv-modal-title">Add Inventory Record</h3>
+            <button class="modal-close" id="agri-inv-modal-close" type="button">&times;</button>
+          </div>
+          <form id="agri-inv-form">
+            <div class="field">
+              <label for="agri-inv-document-no">Document No.</label>
+              <input type="text" id="agri-inv-document-no" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="agri-inv-association">Association *</label>
+              <select id="agri-inv-association" required></select>
+            </div>
+            <div class="field">
+              <label for="agri-inv-agri-input">Agri Input *</label>
+              <select id="agri-inv-agri-input" required></select>
+            </div>
+            <div class="field">
+              <label for="agri-inv-qty">Quantity *</label>
+              <input type="number" id="agri-inv-qty" min="1" step="1" required />
+            </div>
+            <div class="field">
+              <label for="agri-inv-amount">Amount *</label>
+              <input type="number" id="agri-inv-amount" min="0" step="0.01" required />
+            </div>
+            <div class="field">
+              <label for="agri-inv-target-date">Target Date</label>
+              <input type="date" id="agri-inv-target-date" />
+            </div>
+            <div class="field">
+              <label for="agri-inv-date-delivered">Date Delivered</label>
+              <input type="date" id="agri-inv-date-delivered" />
+            </div>
+            <div class="field">
+              <label for="agri-inv-status">Status</label>
+              <select id="agri-inv-status">
+                <option value="">— None —</option>
+                <option value="pending">Pending</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="agri-inv-remarks">Remarks</label>
+              <input type="text" id="agri-inv-remarks" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="agri-inv-attachment">Attachment (PDF, optional)</label>
+              <div id="agri-inv-existing-attachment" class="existing-attachment hidden">
+                <a href="#" id="agri-inv-existing-attachment-link" target="_blank" rel="noopener">📄 <span id="agri-inv-existing-attachment-name"></span></a>
+                <button type="button" class="attachment-remove-btn" id="agri-inv-remove-attachment">Remove</button>
+              </div>
+              <input type="file" id="agri-inv-attachment" accept="application/pdf" />
+              <div class="field-hint">PDF only, up to 50 MB.</div>
+            </div>
+            <div class="field hidden" id="agri-inv-lock-field">
+              <label style="display:flex; align-items:center; gap:8px; font-weight:500;">
+                <input type="checkbox" id="agri-inv-locked" style="width:auto;" />
+                Locked (prevents regular users from editing this record)
+              </label>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn subtle" id="agri-inv-modal-cancel">Cancel</button>
+              <button type="submit" class="btn" id="agri-inv-modal-submit">Add</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ---------- Page: Users (admin/superadmin only) ---------- -->
+      <section class="page" id="page-users">
+        <div class="page-header">
+          <h1>Users</h1>
+          <button id="open-user-modal" class="btn btn-sm">+ Add User</button>
+        </div>
+
+        <div class="table-card">
+          <div class="table-toolbar">
+            <input type="text" id="users-search" class="search-input" placeholder="Search email…" />
+            <select id="users-role-filter" class="filter-select">
+              <option value="">All roles</option>
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="superadmin">Superadmin</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="full_name">Full Name <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="email">Email <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="role">Role <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="disabled">Status <span class="sort-arrow"></span></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="users-rows"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="users-count"></span><div class="pagination" id="users-pagination"></div></div>
+        </div>
+        <div class="empty hidden" id="users-empty">No users found.</div>
+      </section>
+
+      <!-- ---------- Add User Modal ---------- -->
+      <div id="user-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>Add User</h3>
+            <button class="modal-close" id="user-modal-close" type="button">&times;</button>
+          </div>
+          <form id="user-form">
+            <div class="field">
+              <label for="new-user-full-name">Full Name</label>
+              <input type="text" id="new-user-full-name" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="new-user-email">Email</label>
+              <input type="email" id="new-user-email" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="new-user-password">Temporary password</label>
+              <input type="text" id="new-user-password" autocomplete="off" required minlength="6" />
+            </div>
+            <div class="field">
+              <label for="new-user-role">Role</label>
+              <select id="new-user-role">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="superadmin">Superadmin</option>
+              </select>
+            </div>
+            <p class="modal-message">The new account will get an email asking them to confirm their address before they can log in — that's Supabase's standard sign-up flow.</p>
+            <div class="modal-actions">
+              <button type="button" class="btn subtle" id="user-modal-cancel">Cancel</button>
+              <button type="submit" class="btn" id="user-modal-submit">Add User</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ---------- Change / Set Password Modal ---------- -->
+      <div id="password-modal-backdrop" class="modal-backdrop hidden">
+        <div class="modal-card modal-card-sm">
+          <div class="modal-header">
+            <h3 id="password-modal-title">Change Password</h3>
+            <button class="modal-close" id="password-modal-close" type="button">&times;</button>
+          </div>
+          <p class="modal-message" id="password-modal-message">Enter a new password for your account.</p>
+          <form id="password-form">
+            <div class="field">
+              <label for="new-password">New password</label>
+              <input type="password" id="new-password" autocomplete="new-password" required minlength="6" />
+            </div>
+            <div class="field">
+              <label for="confirm-password">Confirm new password</label>
+              <input type="password" id="confirm-password" autocomplete="new-password" required minlength="6" />
+            </div>
+            <div class="form-error" id="password-form-error"></div>
+            <div class="modal-actions">
+              <button type="button" class="btn subtle" id="password-modal-cancel">Cancel</button>
+              <button type="submit" class="btn" id="password-modal-submit">Update Password</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+<script>
+  // ---- Configure these two values with your Supabase project's details ----
+  // Find them in your Supabase dashboard: Project Settings -> API
+  const SUPABASE_URL = "https://bicyhcrlgnrdzxlnievu.supabase.co"; // e.g. https://xxxxx.supabase.co
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpY3loY3JsZ25yZHp4bG5pZXZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NjgxNDIsImV4cCI6MjEwNTE0NDE0Mn0.OaEb6liVSL0mlB9lj8NmnfKJAgPnUU9i8hmTgYQx3o4";
+
+  // ---------------------------------------------------------------------
+
+  document.getElementById('dashboard-date').textContent = new Date().toLocaleDateString(undefined, {
+    weekday: 'long', month: 'long', day: 'numeric'
+  });
+
+  // Elements
+  const loginScreen = document.getElementById('login-screen');
+  const appShell = document.getElementById('app-shell');
+  const warningEl = document.getElementById('config-warning');
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const signoutBtn = document.getElementById('signout-btn');
+  const sidebarNameEl = document.getElementById('sidebar-name');
+  const sidebarEmailEl = document.getElementById('sidebar-email');
+  const roleBadgeEl = document.getElementById('role-badge');
+  const accountAvatarEl = document.getElementById('account-avatar');
+  const accountToggleEl = document.getElementById('account-toggle');
+  const accountPanelEl = document.getElementById('account-panel');
+  const navUsersEl = document.getElementById('nav-users');
+  const navAdminLabelEl = document.getElementById('nav-admin-label');
+
+  const addMachineryBtn = document.getElementById('open-machinery-modal');
+  const machineryRowsEl = document.getElementById('machinery-rows');
+  const machineryEmptyEl = document.getElementById('machinery-empty');
+
+  const addAgriInputBtn = document.getElementById('open-agri-input-modal');
+  const agriInputRowsEl = document.getElementById('agri-input-rows');
+  const agriInputEmptyEl = document.getElementById('agri-input-empty');
+
+  const usersRowsEl = document.getElementById('users-rows');
+  const usersEmptyEl = document.getElementById('users-empty');
+
+  const addAssociationBtn = document.getElementById('open-association-modal');
+  const associationRowsEl = document.getElementById('association-rows');
+  const associationEmptyEl = document.getElementById('association-empty');
+
+  const inventoryRowsEl = document.getElementById('inventory-rows');
+  const inventoryEmptyEl = document.getElementById('inventory-empty');
+
+  const agriInvRowsEl = document.getElementById('agri-inv-rows');
+  const agriInvEmptyEl = document.getElementById('agri-inv-empty');
+
+  let supabaseClient = null;
+  let currentUser = null;
+  let currentRole = null;
+  let currentFullName = '';
+  let machinery = [];
+  let users = [];
+  let associations = [];
+  let machineryFilter = { search: '', status: '' };
+  let machinerySort = { key: null, dir: 1 };
+  let usersFilter = { search: '', role: '' };
+  let usersSort = { key: null, dir: 1 };
+  let associationFilter = { search: '', status: '' };
+  let associationSort = { key: null, dir: 1 };
+  let inventory = [];
+  let inventoryFilter = { search: '', status: '' };
+  let inventorySort = { key: null, dir: 1 };
+  let agriInput = [];
+  let agriInputFilter = { search: '', status: '' };
+  let agriInputSort = { key: null, dir: 1 };
+  let agriInv = [];
+  let agriInvFilter = { search: '', status: '' };
+  let agriInvSort = { key: null, dir: 1 };
+  const machineryPageState = { page: 1, pageSize: 8 };
+  const associationPageState = { page: 1, pageSize: 8 };
+  const usersPageState = { page: 1, pageSize: 8 };
+  const inventoryPageState = { page: 1, pageSize: 8 };
+  const agriInputPageState = { page: 1, pageSize: 8 };
+  const agriInvPageState = { page: 1, pageSize: 8 };
+  let channels = [];
+
+  if (!SUPABASE_URL.startsWith('http') || SUPABASE_ANON_KEY === "YOUR_SUPABASE_ANON_KEY") {
+    warningEl.classList.remove('hidden');
+    loginScreen.classList.remove('hidden');
+  } else {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    init();
+  }
+
+  async function init() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      await onLoggedIn(session.user);
+    } else {
+      showLogin();
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        onLoggedIn(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        showLogin();
+      } else if (event === 'PASSWORD_RECOVERY' && session) {
+        onLoggedIn(session.user).then(() => openPasswordModal({ forced: true }));
+      }
+    });
+  }
+
+  function showLogin() {
+    currentUser = null;
+    currentRole = null;
+    channels.forEach(ch => supabaseClient.removeChannel(ch));
+    channels = [];
+    loginScreen.classList.remove('hidden');
+    appShell.classList.add('hidden');
+  }
+
+  async function onLoggedIn(user) {
+    const { data: profile, error } = await supabaseClient
+      .from('profiles')
+      .select('role, disabled, full_name')
+      .eq('id', user.id)
+      .single();
+
+    if (error || !profile) {
+      loginError.textContent = 'Could not load your account. Try again or contact an administrator.';
+      loginError.style.display = 'block';
+      await supabaseClient.auth.signOut();
+      return;
+    }
+
+    if (profile.disabled) {
+      loginError.textContent = 'This account has been deactivated. Contact an administrator.';
+      loginError.style.display = 'block';
+      await supabaseClient.auth.signOut();
+      return;
+    }
+
+    currentUser = user;
+    currentRole = profile.role;
+    currentFullName = profile.full_name || '';
+
+    updateSidebarIdentity();
+    roleBadgeEl.textContent = currentRole;
+    roleBadgeEl.className = 'role-badge ' + currentRole;
+    navUsersEl.classList.toggle('hidden', !(currentRole === 'admin' || currentRole === 'superadmin'));
+    navAdminLabelEl.classList.toggle('hidden', !(currentRole === 'admin' || currentRole === 'superadmin'));
+    addAssociationBtn.classList.toggle('hidden', !(currentRole === 'admin' || currentRole === 'superadmin'));
+    addMachineryBtn.classList.toggle('hidden', !(currentRole === 'admin' || currentRole === 'superadmin'));
+    addAgriInputBtn.classList.toggle('hidden', !(currentRole === 'admin' || currentRole === 'superadmin'));
+
+    loginScreen.classList.add('hidden');
+    appShell.classList.remove('hidden');
+
+    await fetchMachinery();
+    await fetchAssociations();
+    await fetchInventory();
+    await fetchAgriInput();
+    await fetchAgriInv();
+    if (currentRole === 'admin' || currentRole === 'superadmin') {
+      await fetchUsers();
+    }
+    subscribeToChanges();
+    updateDashboardStats();
+    goToPage('dashboard');
+  }
+
+  function updateDashboardStats() {
+    const statCards = document.querySelectorAll('#page-dashboard .stat-card .stat-value');
+    if (statCards.length < 4) return;
+
+    statCards[0].textContent = inventory.length;
+    statCards[1].textContent = machinery.length;
+    statCards[2].textContent = (currentRole === 'admin' || currentRole === 'superadmin') ? users.length : '—';
+    statCards[3].textContent = inventory.filter(r => r.status === 'pending').length;
+
+    renderBreakdownChart();
+    renderStatusDonut();
+    renderTrendChart();
+  }
+
+  function statusColorVar(status) {
+    const map = {
+      active: 'var(--sage)',
+      inactive: 'var(--rust)',
+      available: 'var(--sage)',
+      'in-use': 'var(--mustard)',
+      maintenance: 'var(--rust)',
+      pending: 'var(--mustard)',
+      delivered: 'var(--sage)',
+      cancelled: 'var(--rust)',
+      'no status': 'var(--paper-line)'
+    };
+    return map[status] || 'var(--sage)';
+  }
+
+  function renderBreakdownChart() {
+    const container = document.getElementById('breakdown-bars');
+    const emptyEl = document.getElementById('breakdown-chart');
+    if (!container || !emptyEl) return;
+    container.innerHTML = '';
+
+    if (!machinery.length) {
+      emptyEl.classList.remove('hidden');
+      return;
+    }
+    emptyEl.classList.add('hidden');
+
+    const counts = { active: 0, inactive: 0 };
+    machinery.forEach(m => { if (counts[m.status] !== undefined) counts[m.status]++; });
+    const max = Math.max(...Object.values(counts), 1);
+
+    Object.entries(counts).forEach(([status, count]) => {
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+
+      const label = document.createElement('div');
+      label.className = 'breakdown-label';
+      label.textContent = status.replace('-', ' ');
+
+      const track = document.createElement('div');
+      track.className = 'breakdown-track';
+      const fill = document.createElement('div');
+      fill.className = 'breakdown-fill';
+      fill.style.width = (count / max * 100) + '%';
+      fill.style.background = statusColorVar(status);
+      track.appendChild(fill);
+
+      const countEl = document.createElement('div');
+      countEl.className = 'breakdown-count';
+      countEl.textContent = count;
+
+      row.appendChild(label);
+      row.appendChild(track);
+      row.appendChild(countEl);
+      container.appendChild(row);
+    });
+  }
+
+  function renderStatusDonut() {
+    const svg = document.getElementById('status-donut');
+    const legend = document.getElementById('status-legend');
+    const emptyEl = document.getElementById('status-empty');
+    const wrap = document.getElementById('status-donut-wrap');
+    const centerValue = document.getElementById('donut-center-value');
+    if (!svg || !legend || !emptyEl || !wrap) return;
+
+    svg.innerHTML = '';
+    legend.innerHTML = '';
+
+    if (!inventory.length) {
+      emptyEl.classList.remove('hidden');
+      wrap.classList.add('hidden');
+      return;
+    }
+    emptyEl.classList.add('hidden');
+    wrap.classList.remove('hidden');
+
+    const counts = { pending: 0, delivered: 0, cancelled: 0 };
+    let noStatus = 0;
+    inventory.forEach(r => {
+      if (r.status && counts[r.status] !== undefined) counts[r.status]++;
+      else noStatus++;
+    });
+    if (noStatus) counts['no status'] = noStatus;
+
+    const total = inventory.length;
+    centerValue.textContent = total;
+
+    const cx = 60, cy = 60, radius = 50;
+    const circumference = 2 * Math.PI * radius;
+    let offset = 0;
+    const svgNS = 'http://www.w3.org/2000/svg';
+
+    const bgCircle = document.createElementNS(svgNS, 'circle');
+    bgCircle.setAttribute('cx', cx);
+    bgCircle.setAttribute('cy', cy);
+    bgCircle.setAttribute('r', radius);
+    bgCircle.setAttribute('fill', 'none');
+    bgCircle.style.stroke = 'var(--paper-line)';
+    bgCircle.setAttribute('stroke-width', '14');
+    svg.appendChild(bgCircle);
+
+    Object.entries(counts).forEach(([status, count]) => {
+      if (!count) return;
+      const fraction = count / total;
+      const dash = fraction * circumference;
+
+      const circle = document.createElementNS(svgNS, 'circle');
+      circle.setAttribute('cx', cx);
+      circle.setAttribute('cy', cy);
+      circle.setAttribute('r', radius);
+      circle.setAttribute('fill', 'none');
+      circle.style.stroke = statusColorVar(status);
+      circle.setAttribute('stroke-width', '14');
+      circle.setAttribute('stroke-dasharray', `${dash} ${circumference - dash}`);
+      circle.setAttribute('stroke-dashoffset', String(-offset));
+      circle.setAttribute('transform', `rotate(-90 ${cx} ${cy})`);
+      svg.appendChild(circle);
+      offset += dash;
+
+      const item = document.createElement('div');
+      item.className = 'donut-legend-item';
+      const dot = document.createElement('span');
+      dot.className = 'donut-legend-dot';
+      dot.style.background = statusColorVar(status);
+      const label = document.createElement('span');
+      label.textContent = status.replace('-', ' ');
+      const countSpan = document.createElement('span');
+      countSpan.className = 'donut-legend-count';
+      countSpan.textContent = count;
+      item.appendChild(dot);
+      item.appendChild(label);
+      item.appendChild(countSpan);
+      legend.appendChild(item);
+    });
+  }
+
+  function renderTrendChart() {
+    const container = document.getElementById('trend-chart');
+    const emptyEl = document.getElementById('trend-empty');
+    if (!container || !emptyEl) return;
+    container.innerHTML = '';
+
+    if (!inventory.length) {
+      emptyEl.classList.remove('hidden');
+      return;
+    }
+    emptyEl.classList.add('hidden');
+
+    const months = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString(undefined, { month: 'short' }), count: 0 });
+    }
+
+    inventory.forEach(r => {
+      if (!r.created_at) return;
+      const d = new Date(r.created_at);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const bucket = months.find(m => m.key === key);
+      if (bucket) bucket.count++;
+    });
+
+    const max = Math.max(...months.map(m => m.count), 1);
+
+    months.forEach(m => {
+      const col = document.createElement('div');
+      col.className = 'trend-bar-col';
+
+      const valueEl = document.createElement('div');
+      valueEl.className = 'trend-bar-value';
+      valueEl.textContent = m.count || '';
+
+      const bar = document.createElement('div');
+      bar.className = 'trend-bar';
+      bar.style.height = Math.max((m.count / max * 130), m.count ? 4 : 2) + 'px';
+
+      const labelEl = document.createElement('div');
+      labelEl.className = 'trend-bar-label';
+      labelEl.textContent = m.label;
+
+      col.appendChild(valueEl);
+      col.appendChild(bar);
+      col.appendChild(labelEl);
+      container.appendChild(col);
+    });
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.style.display = 'none';
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      loginError.textContent = error.message;
+      loginError.style.display = 'block';
+    } else {
+      showToast('Signed in successfully. Welcome back!');
+    }
+  });
+
+  signoutBtn.addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+  });
+
+  // ---------- Account identity (name, avatar initials, email) ----------
+  function getInitials(name, email) {
+    if (name && name.trim()) {
+      const parts = name.trim().split(/\s+/);
+      return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
+    }
+    if (email) return email.slice(0, 2).toUpperCase();
+    return '?';
+  }
+
+  function updateSidebarIdentity() {
+    const displayName = currentFullName || (currentUser ? currentUser.email : '');
+    sidebarNameEl.textContent = displayName;
+    sidebarEmailEl.textContent = currentUser ? currentUser.email : '';
+    accountAvatarEl.textContent = getInitials(currentFullName, currentUser ? currentUser.email : '');
+  }
+
+  // ---------- Account panel expand/collapse ----------
+  accountToggleEl.addEventListener('click', () => {
+    const willExpand = accountPanelEl.classList.contains('hidden');
+    accountPanelEl.classList.toggle('hidden', !willExpand);
+    accountToggleEl.classList.toggle('expanded', willExpand);
+  });
+
+  // ---------- Sidebar collapse ----------
+  const sidebarEl = document.querySelector('.sidebar');
+  const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+
+  try {
+    if (localStorage.getItem('sidebar-collapsed') === '1') {
+      sidebarEl.classList.add('collapsed');
+    }
+  } catch (e) { /* localStorage unavailable — ignore, sidebar just stays expanded */ }
+
+  sidebarToggleBtn.addEventListener('click', () => {
+    sidebarEl.classList.toggle('collapsed');
+    try {
+      localStorage.setItem('sidebar-collapsed', sidebarEl.classList.contains('collapsed') ? '1' : '0');
+    } catch (e) { /* ignore */ }
+  });
+
+  // ---------- Change / Set Password ----------
+  const passwordModalBackdrop = document.getElementById('password-modal-backdrop');
+  const passwordModalTitle = document.getElementById('password-modal-title');
+  const passwordModalMessage = document.getElementById('password-modal-message');
+  const passwordModalClose = document.getElementById('password-modal-close');
+  const passwordModalCancel = document.getElementById('password-modal-cancel');
+  const passwordForm = document.getElementById('password-form');
+  const passwordFormError = document.getElementById('password-form-error');
+  const changePasswordBtn = document.getElementById('change-password-btn');
+
+  let passwordModalForced = false;
+
+  function openPasswordModal(opts = {}) {
+    passwordModalForced = !!opts.forced;
+    passwordModalTitle.textContent = passwordModalForced ? 'Set New Password' : 'Change Password';
+    passwordModalMessage.textContent = passwordModalForced
+      ? 'You requested a password reset. Enter a new password to finish.'
+      : 'Enter a new password for your account.';
+    passwordModalClose.classList.toggle('hidden', passwordModalForced);
+    passwordModalCancel.classList.toggle('hidden', passwordModalForced);
+    passwordFormError.style.display = 'none';
+    passwordForm.reset();
+    passwordModalBackdrop.classList.remove('hidden');
+  }
+
+  function closePasswordModal() {
+    if (passwordModalForced) return; // must set a new password before continuing
+    passwordModalBackdrop.classList.add('hidden');
+    passwordForm.reset();
+  }
+
+  changePasswordBtn.addEventListener('click', () => openPasswordModal());
+
+  // ---------- Edit Profile (full name) ----------
+  const profileModalBackdrop = document.getElementById('profile-modal-backdrop');
+  const profileModalClose = document.getElementById('profile-modal-close');
+  const profileModalCancel = document.getElementById('profile-modal-cancel');
+  const profileForm = document.getElementById('profile-form');
+  const editProfileBtn = document.getElementById('edit-profile-btn');
+
+  function openProfileModal() {
+    document.getElementById('profile-full-name').value = currentFullName;
+    profileModalBackdrop.classList.remove('hidden');
+  }
+
+  function closeProfileModal() {
+    profileModalBackdrop.classList.add('hidden');
+  }
+
+  editProfileBtn.addEventListener('click', openProfileModal);
+  profileModalClose.addEventListener('click', closeProfileModal);
+  profileModalCancel.addEventListener('click', closeProfileModal);
+  profileModalBackdrop.addEventListener('click', (e) => { if (e.target === profileModalBackdrop) closeProfileModal(); });
+
+  profileForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fullName = document.getElementById('profile-full-name').value.trim();
+
+    const { error } = await supabaseClient
+      .from('profiles')
+      .update({ full_name: fullName || null })
+      .eq('id', currentUser.id);
+
+    if (error) {
+      showToast('Could not update profile: ' + error.message, 'error');
+      return;
+    }
+
+    currentFullName = fullName;
+    updateSidebarIdentity();
+    closeProfileModal();
+    showToast('Profile updated.');
+  });
+  passwordModalClose.addEventListener('click', closePasswordModal);
+  passwordModalCancel.addEventListener('click', closePasswordModal);
+  passwordModalBackdrop.addEventListener('click', (e) => {
+    if (e.target === passwordModalBackdrop) closePasswordModal();
+  });
+
+  passwordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    passwordFormError.style.display = 'none';
+
+    const newPassword = document.getElementById('new-password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    if (newPassword !== confirmPassword) {
+      passwordFormError.textContent = "Passwords don't match.";
+      passwordFormError.style.display = 'block';
+      return;
+    }
+
+    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+    if (error) {
+      passwordFormError.textContent = error.message;
+      passwordFormError.style.display = 'block';
+      return;
+    }
+
+    passwordModalForced = false;
+    passwordModalBackdrop.classList.add('hidden');
+    passwordForm.reset();
+    showToast('Password updated.');
+  });
+
+  // ---------- Sidebar navigation ----------
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => goToPage(link.dataset.page));
+  });
+
+  function goToPage(page) {
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.page === page));
+    document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
+    if (page === 'users') fetchUsers();
+  }
+
+  // ---------- Realtime ----------
+  function subscribeToChanges() {
+    const machineryCh = supabaseClient
+      .channel('machinery-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'machinery' }, fetchMachinery)
+      .subscribe();
+
+    const associationCh = supabaseClient
+      .channel('associations-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'associations' }, fetchAssociations)
+      .subscribe();
+
+    const inventoryCh = supabaseClient
+      .channel('inventory-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'machine_inventory' }, fetchInventory)
+      .subscribe();
+
+    const agriInputCh = supabaseClient
+      .channel('agri-input-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'agri_input' }, fetchAgriInput)
+      .subscribe();
+
+    const agriInvCh = supabaseClient
+      .channel('agricultural-inventory-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'agricultural_inventory' }, fetchAgriInv)
+      .subscribe();
+
+    channels = [machineryCh, associationCh, inventoryCh, agriInputCh, agriInvCh];
+  }
+
+
+  function wireSortableHeaders(container, sortState, onChange) {
+    container.querySelectorAll('th.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        const key = th.dataset.sort;
+        if (sortState.key === key) {
+          sortState.dir *= -1;
+        } else {
+          sortState.key = key;
+          sortState.dir = 1;
+        }
+        container.querySelectorAll('.sort-arrow').forEach(a => a.className = 'sort-arrow');
+        th.querySelector('.sort-arrow').className = 'sort-arrow ' + (sortState.dir === 1 ? 'asc' : 'desc');
+        onChange();
+      });
+    });
+  }
+
+  function applySort(list, sortState) {
+    if (!sortState.key) return list;
+    const copy = [...list];
+    copy.sort((a, b) => {
+      let av = a[sortState.key];
+      let bv = b[sortState.key];
+      if (typeof av === 'boolean') { av = av ? 1 : 0; bv = bv ? 1 : 0; }
+      av = (av ?? '').toString().toLowerCase();
+      bv = (bv ?? '').toString().toLowerCase();
+      if (av < bv) return -1 * sortState.dir;
+      if (av > bv) return 1 * sortState.dir;
+      return 0;
+    });
+    return copy;
+  }
+
+  // Slices `rows` to the current page of `pageState`, clamping the page
+  // number if the filtered result set has shrunk. Returns just the rows
+  // to render for this page.
+  function paginateRows(rows, pageState) {
+    const totalPages = Math.max(1, Math.ceil(rows.length / pageState.pageSize));
+    if (pageState.page > totalPages) pageState.page = totalPages;
+    if (pageState.page < 1) pageState.page = 1;
+    const start = (pageState.page - 1) * pageState.pageSize;
+    return { pageRows: rows.slice(start, start + pageState.pageSize), totalPages };
+  }
+
+  function renderPaginationControls(containerId, pageState, totalPages, rerenderFn) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'pagination-btn';
+    prevBtn.innerHTML = '&lsaquo;';
+    prevBtn.disabled = pageState.page <= 1;
+    prevBtn.addEventListener('click', () => { pageState.page--; rerenderFn(); });
+
+    const label = document.createElement('span');
+    label.className = 'pagination-label';
+    label.textContent = `Page ${pageState.page} of ${totalPages}`;
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'pagination-btn';
+    nextBtn.innerHTML = '&rsaquo;';
+    nextBtn.disabled = pageState.page >= totalPages;
+    nextBtn.addEventListener('click', () => { pageState.page++; rerenderFn(); });
+
+    el.appendChild(prevBtn);
+    el.appendChild(label);
+    el.appendChild(nextBtn);
+  }
+
+  // ================= MACHINERY =================
+  const canManageMachinery = () => currentRole === 'admin' || currentRole === 'superadmin';
+
+  const machineryModalBackdrop = document.getElementById('machinery-modal-backdrop');
+  const machineryModalTitle = document.getElementById('machinery-modal-title');
+  const machineryModalSubmit = document.getElementById('machinery-modal-submit');
+  const machineryForm = document.getElementById('machinery-form');
+  const machineryModalClose = document.getElementById('machinery-modal-close');
+  const machineryModalCancel = document.getElementById('machinery-modal-cancel');
+
+  let editingMachineryId = null;
+
+  function openMachineryModal(record = null) {
+    editingMachineryId = record ? record.id : null;
+    machineryModalTitle.textContent = record ? 'Update Machinery' : 'Add Machinery';
+    machineryModalSubmit.textContent = record ? 'Update' : 'Add';
+
+    document.getElementById('machinery-name').value = record ? record.name || '' : '';
+    document.getElementById('machinery-type').value = record ? record.type || '' : '';
+    document.getElementById('machinery-status').value = record ? record.status : 'active';
+
+    machineryModalBackdrop.classList.remove('hidden');
+  }
+
+  function closeMachineryModal() {
+    machineryModalBackdrop.classList.add('hidden');
+    editingMachineryId = null;
+    machineryForm.reset();
+  }
+
+  addMachineryBtn.addEventListener('click', () => openMachineryModal());
+  machineryModalClose.addEventListener('click', closeMachineryModal);
+  machineryModalCancel.addEventListener('click', closeMachineryModal);
+  machineryModalBackdrop.addEventListener('click', (e) => { if (e.target === machineryModalBackdrop) closeMachineryModal(); });
+
+  async function fetchMachinery() {
+    const { data, error } = await supabaseClient
+      .from('machinery')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) { console.error('Error fetching machinery:', error); return; }
+    machinery = data;
+    renderMachinery();
+  }
+
+  machineryForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!canManageMachinery()) return;
+
+    const name = document.getElementById('machinery-name').value.trim();
+    const type = document.getElementById('machinery-type').value.trim();
+    const status = document.getElementById('machinery-status').value;
+    if (!name) return;
+
+    const payload = { name, type: type || null, status };
+
+    if (editingMachineryId) {
+      const { error } = await supabaseClient
+        .from('machinery')
+        .update(payload)
+        .eq('id', editingMachineryId);
+
+      if (error) { console.error(error); showToast('Could not update machinery.', 'error'); }
+      else {
+        showToast('Machinery updated.');
+        closeMachineryModal();
+        fetchMachinery();
+      }
+    } else {
+      const { error } = await supabaseClient
+        .from('machinery')
+        .insert([{ ...payload, created_by: currentUser.id }]);
+
+      if (error) { console.error(error); showToast('Could not add machinery.', 'error'); }
+      else {
+        showToast('Machinery added.');
+        closeMachineryModal();
+        fetchMachinery();
+      }
+    }
+  });
+
+  async function toggleMachineryStatus(id, current) {
+    if (!canManageMachinery()) return;
+    const next = current === 'active' ? 'inactive' : 'active';
+    const { error } = await supabaseClient.from('machinery').update({ status: next }).eq('id', id);
+    if (error) { console.error(error); showToast('Could not update status.', 'error'); }
+    else { showToast('Status updated.'); fetchMachinery(); }
+  }
+
+  function confirmDeleteMachinery(record) {
+    askConfirm(`Delete "${record.name}"? This can't be undone.`, async () => {
+      const { error } = await supabaseClient.from('machinery').delete().eq('id', record.id);
+      if (error) { console.error(error); showToast('Could not delete machinery.', 'error'); }
+      else { showToast('Machinery deleted.'); fetchMachinery(); }
+    });
+  }
+
+  function renderMachinery() {
+    updateDashboardStats();
+    let rows = machinery.filter(m => {
+      const matchesSearch = !machineryFilter.search ||
+        (m.name || '').toLowerCase().includes(machineryFilter.search) ||
+        (m.type || '').toLowerCase().includes(machineryFilter.search);
+      const matchesStatus = !machineryFilter.status || m.status === machineryFilter.status;
+      return matchesSearch && matchesStatus;
+    });
+    rows = applySort(rows, machinerySort);
+
+    machineryRowsEl.innerHTML = '';
+    machineryEmptyEl.classList.toggle('hidden', machinery.length !== 0);
+    document.getElementById('machinery-count').textContent =
+      machinery.length ? `Showing ${rows.length} of ${machinery.length}` : '';
+
+    if (machinery.length && rows.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 4;
+      td.style.textAlign = 'center';
+      td.style.color = 'var(--text-muted)';
+      td.style.padding = '24px';
+      td.textContent = 'No machinery matches your search.';
+      tr.appendChild(td);
+      machineryRowsEl.appendChild(tr);
+      renderPaginationControls('machinery-pagination', machineryPageState, 1, renderMachinery);
+      return;
+    }
+
+    const { pageRows, totalPages } = paginateRows(rows, machineryPageState);
+    renderPaginationControls('machinery-pagination', machineryPageState, totalPages, renderMachinery);
+
+    const canManage = canManageMachinery();
+
+    pageRows.forEach(m => {
+      const tr = document.createElement('tr');
+
+      const nameTd = document.createElement('td');
+      nameTd.textContent = m.name || '—';
+
+      const typeTd = document.createElement('td');
+      typeTd.textContent = m.type || '—';
+
+      const statusTd = document.createElement('td');
+      const pillClass = m.status === 'active' ? 'available' : 'maintenance';
+      if (canManage) {
+        const pill = document.createElement('button');
+        pill.className = 'status-pill ' + pillClass;
+        pill.textContent = m.status;
+        pill.title = 'Click to toggle status';
+        pill.addEventListener('click', () => toggleMachineryStatus(m.id, m.status));
+        statusTd.appendChild(pill);
+      } else {
+        const pill = document.createElement('span');
+        pill.className = 'status-pill ' + pillClass;
+        pill.textContent = m.status;
+        pill.style.cursor = 'default';
+        statusTd.appendChild(pill);
+      }
+
+      const actionsTd = document.createElement('td');
+      if (canManage) {
+        actionsTd.className = 'row-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'row-icon-btn';
+        editBtn.title = 'Edit machinery';
+        editBtn.innerHTML = '<svg class="edit-icon" viewBox="0 0 20 20" fill="none"><path d="M13.5 3.5l3 3L6 17l-3.5 1L3.5 14.5 13.5 3.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+        editBtn.addEventListener('click', () => openMachineryModal(m));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'row-icon-btn danger';
+        delBtn.title = 'Delete machinery';
+        delBtn.innerHTML = '<svg class="trash-icon" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M8 6V4.5a1 1 0 011-1h2a1 1 0 011 1V6m2 0v9.5a1 1 0 01-1 1H6a1 1 0 01-1-1V6h10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.3 9v4.5M11.7 9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+        delBtn.addEventListener('click', () => confirmDeleteMachinery(m));
+
+        actionsTd.appendChild(editBtn);
+        actionsTd.appendChild(delBtn);
+      }
+
+      tr.appendChild(nameTd);
+      tr.appendChild(typeTd);
+      tr.appendChild(statusTd);
+      tr.appendChild(actionsTd);
+      machineryRowsEl.appendChild(tr);
+    });
+  }
+
+  document.getElementById('machinery-search').addEventListener('input', (e) => {
+    machineryFilter.search = e.target.value.trim().toLowerCase();
+    renderMachinery();
+  });
+  document.getElementById('machinery-status-filter').addEventListener('change', (e) => {
+    machineryFilter.status = e.target.value;
+    renderMachinery();
+  });
+  wireSortableHeaders(
+    document.querySelector('#page-machinery .data-table'),
+    machinerySort,
+    renderMachinery
+  );
+
+  // ================= AGRI INPUT =================
+  const canManageAgriInput = () => currentRole === 'admin' || currentRole === 'superadmin';
+
+  const agriInputModalBackdrop = document.getElementById('agri-input-modal-backdrop');
+  const agriInputModalTitle = document.getElementById('agri-input-modal-title');
+  const agriInputModalSubmit = document.getElementById('agri-input-modal-submit');
+  const agriInputForm = document.getElementById('agri-input-form');
+  const agriInputModalClose = document.getElementById('agri-input-modal-close');
+  const agriInputModalCancel = document.getElementById('agri-input-modal-cancel');
+
+  let editingAgriInputId = null;
+
+  function openAgriInputModal(record = null) {
+    editingAgriInputId = record ? record.id : null;
+    agriInputModalTitle.textContent = record ? 'Update Agri Input' : 'Add Agri Input';
+    agriInputModalSubmit.textContent = record ? 'Update' : 'Add';
+
+    document.getElementById('agri-input-name').value = record ? record.name || '' : '';
+    document.getElementById('agri-input-type').value = record ? record.type || '' : '';
+    document.getElementById('agri-input-status').value = record ? record.status : 'active';
+
+    agriInputModalBackdrop.classList.remove('hidden');
+  }
+
+  function closeAgriInputModal() {
+    agriInputModalBackdrop.classList.add('hidden');
+    editingAgriInputId = null;
+    agriInputForm.reset();
+  }
+
+  addAgriInputBtn.addEventListener('click', () => openAgriInputModal());
+  agriInputModalClose.addEventListener('click', closeAgriInputModal);
+  agriInputModalCancel.addEventListener('click', closeAgriInputModal);
+  agriInputModalBackdrop.addEventListener('click', (e) => { if (e.target === agriInputModalBackdrop) closeAgriInputModal(); });
+
+  async function fetchAgriInput() {
+    const { data, error } = await supabaseClient
+      .from('agri_input')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) { console.error('Error fetching agri input:', error); return; }
+    agriInput = data;
+    renderAgriInput();
+  }
+
+  agriInputForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!canManageAgriInput()) return;
+
+    const name = document.getElementById('agri-input-name').value.trim();
+    const type = document.getElementById('agri-input-type').value.trim();
+    const status = document.getElementById('agri-input-status').value;
+    if (!name) return;
+
+    const payload = { name, type: type || null, status };
+
+    if (editingAgriInputId) {
+      const { error } = await supabaseClient
+        .from('agri_input')
+        .update(payload)
+        .eq('id', editingAgriInputId);
+
+      if (error) { console.error(error); showToast('Could not update agri input.', 'error'); }
+      else {
+        showToast('Agri input updated.');
+        closeAgriInputModal();
+        fetchAgriInput();
+      }
+    } else {
+      const { error } = await supabaseClient
+        .from('agri_input')
+        .insert([{ ...payload, created_by: currentUser.id }]);
+
+      if (error) { console.error(error); showToast('Could not add agri input.', 'error'); }
+      else {
+        showToast('Agri input added.');
+        closeAgriInputModal();
+        fetchAgriInput();
+      }
+    }
+  });
+
+  async function toggleAgriInputStatus(id, current) {
+    if (!canManageAgriInput()) return;
+    const next = current === 'active' ? 'inactive' : 'active';
+    const { error } = await supabaseClient.from('agri_input').update({ status: next }).eq('id', id);
+    if (error) { console.error(error); showToast('Could not update status.', 'error'); }
+    else { showToast('Status updated.'); fetchAgriInput(); }
+  }
+
+  function confirmDeleteAgriInput(record) {
+    askConfirm(`Delete "${record.name}"? This can't be undone.`, async () => {
+      const { error } = await supabaseClient.from('agri_input').delete().eq('id', record.id);
+      if (error) { console.error(error); showToast('Could not delete agri input.', 'error'); }
+      else { showToast('Agri input deleted.'); fetchAgriInput(); }
+    });
+  }
+
+  function renderAgriInput() {
+    updateDashboardStats();
+    let rows = agriInput.filter(m => {
+      const matchesSearch = !agriInputFilter.search ||
+        (m.name || '').toLowerCase().includes(agriInputFilter.search) ||
+        (m.type || '').toLowerCase().includes(agriInputFilter.search);
+      const matchesStatus = !agriInputFilter.status || m.status === agriInputFilter.status;
+      return matchesSearch && matchesStatus;
+    });
+    rows = applySort(rows, agriInputSort);
+
+    agriInputRowsEl.innerHTML = '';
+    agriInputEmptyEl.classList.toggle('hidden', agriInput.length !== 0);
+    document.getElementById('agri-input-count').textContent =
+      agriInput.length ? `Showing ${rows.length} of ${agriInput.length}` : '';
+
+    if (agriInput.length && rows.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 4;
+      td.style.textAlign = 'center';
+      td.style.color = 'var(--text-muted)';
+      td.style.padding = '24px';
+      td.textContent = 'No agri input matches your search.';
+      tr.appendChild(td);
+      agriInputRowsEl.appendChild(tr);
+      renderPaginationControls('agri-input-pagination', agriInputPageState, 1, renderAgriInput);
+      return;
+    }
+
+    const { pageRows, totalPages } = paginateRows(rows, agriInputPageState);
+    renderPaginationControls('agri-input-pagination', agriInputPageState, totalPages, renderAgriInput);
+
+    const canManage = canManageAgriInput();
+
+    pageRows.forEach(m => {
+      const tr = document.createElement('tr');
+
+      const nameTd = document.createElement('td');
+      nameTd.textContent = m.name || '—';
+
+      const typeTd = document.createElement('td');
+      typeTd.textContent = m.type || '—';
+
+      const statusTd = document.createElement('td');
+      const pillClass = m.status === 'active' ? 'available' : 'maintenance';
+      if (canManage) {
+        const pill = document.createElement('button');
+        pill.className = 'status-pill ' + pillClass;
+        pill.textContent = m.status;
+        pill.title = 'Click to toggle status';
+        pill.addEventListener('click', () => toggleAgriInputStatus(m.id, m.status));
+        statusTd.appendChild(pill);
+      } else {
+        const pill = document.createElement('span');
+        pill.className = 'status-pill ' + pillClass;
+        pill.textContent = m.status;
+        pill.style.cursor = 'default';
+        statusTd.appendChild(pill);
+      }
+
+      const actionsTd = document.createElement('td');
+      if (canManage) {
+        actionsTd.className = 'row-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'row-icon-btn';
+        editBtn.title = 'Edit agri input';
+        editBtn.innerHTML = '<svg class="edit-icon" viewBox="0 0 20 20" fill="none"><path d="M13.5 3.5l3 3L6 17l-3.5 1L3.5 14.5 13.5 3.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+        editBtn.addEventListener('click', () => openAgriInputModal(m));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'row-icon-btn danger';
+        delBtn.title = 'Delete agri input';
+        delBtn.innerHTML = '<svg class="trash-icon" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M8 6V4.5a1 1 0 011-1h2a1 1 0 011 1V6m2 0v9.5a1 1 0 01-1 1H6a1 1 0 01-1-1V6h10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.3 9v4.5M11.7 9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+        delBtn.addEventListener('click', () => confirmDeleteAgriInput(m));
+
+        actionsTd.appendChild(editBtn);
+        actionsTd.appendChild(delBtn);
+      }
+
+      tr.appendChild(nameTd);
+      tr.appendChild(typeTd);
+      tr.appendChild(statusTd);
+      tr.appendChild(actionsTd);
+      agriInputRowsEl.appendChild(tr);
+    });
+  }
+
+  document.getElementById('agri-input-search').addEventListener('input', (e) => {
+    agriInputFilter.search = e.target.value.trim().toLowerCase();
+    renderAgriInput();
+  });
+  document.getElementById('agri-input-status-filter').addEventListener('change', (e) => {
+    agriInputFilter.status = e.target.value;
+    renderAgriInput();
+  });
+  wireSortableHeaders(
+    document.querySelector('#page-agri-input .data-table'),
+    agriInputSort,
+    renderAgriInput
+  );
+
+  // ================= TOASTS =================
+  const toastContainer = document.getElementById('toast-container');
+
+  const TOAST_ICONS = {
+    success: '<svg width="17" height="17" viewBox="0 0 20 20" fill="none"><path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    error: '<svg width="17" height="17" viewBox="0 0 20 20" fill="none"><path d="M10 6v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="14" r="1" fill="currentColor"/></svg>'
+  };
+
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+
+    const iconCircle = document.createElement('div');
+    iconCircle.className = 'toast-icon-circle ' + type;
+    iconCircle.innerHTML = TOAST_ICONS[type] || TOAST_ICONS.success;
+
+    const content = document.createElement('div');
+    content.className = 'toast-content';
+    const title = document.createElement('div');
+    title.className = 'toast-title';
+    title.textContent = type === 'error' ? 'Error' : 'Success';
+    const desc = document.createElement('div');
+    desc.className = 'toast-desc';
+    desc.textContent = message;
+    content.appendChild(title);
+    content.appendChild(desc);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'toast-close';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.title = 'Dismiss';
+
+    toast.appendChild(iconCircle);
+    toast.appendChild(content);
+    toast.appendChild(closeBtn);
+    toastContainer.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('show'));
+
+    const dismiss = () => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 250);
+    };
+
+    const autoDismiss = setTimeout(dismiss, 4000);
+    closeBtn.addEventListener('click', () => {
+      clearTimeout(autoDismiss);
+      dismiss();
+    });
+  }
+
+  // ================= CONFIRM MODAL =================
+  const confirmBackdrop = document.getElementById('confirm-modal-backdrop');
+  const confirmMessageEl = document.getElementById('confirm-modal-message');
+  const confirmConfirmBtn = document.getElementById('confirm-modal-confirm');
+  const confirmCancelBtn = document.getElementById('confirm-modal-cancel');
+  let confirmAction = null;
+
+  function askConfirm(message, onConfirm) {
+    confirmMessageEl.textContent = message;
+    confirmAction = onConfirm;
+    confirmBackdrop.classList.remove('hidden');
+  }
+
+  function closeConfirm() {
+    confirmBackdrop.classList.add('hidden');
+    confirmAction = null;
+  }
+
+  confirmCancelBtn.addEventListener('click', closeConfirm);
+  confirmBackdrop.addEventListener('click', (e) => { if (e.target === confirmBackdrop) closeConfirm(); });
+  confirmConfirmBtn.addEventListener('click', async () => {
+    if (confirmAction) await confirmAction();
+    closeConfirm();
+  });
+
+  // ================= ASSOCIATIONS =================
+  const canManageAssociations = () => currentRole === 'admin' || currentRole === 'superadmin';
+
+  const openAssociationModalBtn = document.getElementById('open-association-modal');
+  const associationModalBackdrop = document.getElementById('association-modal-backdrop');
+  const associationModalTitle = document.getElementById('association-modal-title');
+  const associationModalSubmit = document.getElementById('association-modal-submit');
+  const associationForm = document.getElementById('association-form');
+  const associationModalClose = document.getElementById('association-modal-close');
+  const associationModalCancel = document.getElementById('association-modal-cancel');
+
+  let editingAssociationId = null;
+
+  function openAssociationModal(record = null) {
+    editingAssociationId = record ? record.id : null;
+    associationModalTitle.textContent = record ? 'Update Association' : 'Add Association';
+    associationModalSubmit.textContent = record ? 'Update' : 'Add';
+
+    document.getElementById('association-name').value = record ? record.association || '' : '';
+    document.getElementById('association-province').value = record ? record.province || '' : '';
+    document.getElementById('association-municipality').value = record ? record.municipality || '' : '';
+    document.getElementById('association-barangay').value = record ? record.barangay || '' : '';
+    document.getElementById('association-status').value = record ? record.status : 'active';
+
+    associationModalBackdrop.classList.remove('hidden');
+  }
+
+  function closeAssociationModal() {
+    associationModalBackdrop.classList.add('hidden');
+    editingAssociationId = null;
+    associationForm.reset();
+  }
+
+  openAssociationModalBtn.addEventListener('click', () => openAssociationModal());
+  associationModalClose.addEventListener('click', closeAssociationModal);
+  associationModalCancel.addEventListener('click', closeAssociationModal);
+  associationModalBackdrop.addEventListener('click', (e) => { if (e.target === associationModalBackdrop) closeAssociationModal(); });
+
+  async function fetchAssociations() {
+    const { data, error } = await supabaseClient
+      .from('associations')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) { console.error('Error fetching associations:', error); return; }
+    associations = data;
+    renderAssociations();
+  }
+
+  associationForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!canManageAssociations()) return;
+
+    const association = document.getElementById('association-name').value.trim();
+    const province = document.getElementById('association-province').value.trim();
+    const municipality = document.getElementById('association-municipality').value.trim();
+    const barangay = document.getElementById('association-barangay').value.trim();
+    const status = document.getElementById('association-status').value;
+    if (!association) return;
+
+    const payload = {
+      association,
+      province: province || null,
+      municipality: municipality || null,
+      barangay: barangay || null,
+      status
+    };
+
+    if (editingAssociationId) {
+      const { error } = await supabaseClient
+        .from('associations')
+        .update(payload)
+        .eq('id', editingAssociationId);
+
+      if (error) { console.error(error); showToast('Could not update association.', 'error'); }
+      else {
+        showToast('Association updated.');
+        closeAssociationModal();
+        fetchAssociations();
+      }
+    } else {
+      const { error } = await supabaseClient
+        .from('associations')
+        .insert([{ ...payload, created_by: currentUser.id }]);
+
+      if (error) { console.error(error); showToast('Could not add association.', 'error'); }
+      else {
+        showToast('Association added.');
+        closeAssociationModal();
+        fetchAssociations();
+      }
+    }
+  });
+
+  async function toggleAssociationStatus(id, current) {
+    if (!canManageAssociations()) return;
+    const next = current === 'active' ? 'inactive' : 'active';
+    const { error } = await supabaseClient.from('associations').update({ status: next }).eq('id', id);
+    if (error) { console.error(error); showToast('Could not update status.', 'error'); }
+    else { showToast('Status updated.'); fetchAssociations(); }
+  }
+
+  function confirmDeleteAssociation(record) {
+    askConfirm(`Delete "${record.association}"? This can't be undone.`, async () => {
+      const { error } = await supabaseClient.from('associations').delete().eq('id', record.id);
+      if (error) { console.error(error); showToast('Could not delete association.', 'error'); }
+      else { showToast('Association deleted.'); fetchAssociations(); }
+    });
+  }
+
+  function renderAssociations() {
+    let rows = associations.filter(a => {
+      const matchesSearch = !associationFilter.search ||
+        (a.association || '').toLowerCase().includes(associationFilter.search) ||
+        (a.province || '').toLowerCase().includes(associationFilter.search) ||
+        (a.municipality || '').toLowerCase().includes(associationFilter.search) ||
+        (a.barangay || '').toLowerCase().includes(associationFilter.search);
+      const matchesStatus = !associationFilter.status || a.status === associationFilter.status;
+      return matchesSearch && matchesStatus;
+    });
+    rows = applySort(rows, associationSort);
+
+    associationRowsEl.innerHTML = '';
+    associationEmptyEl.classList.toggle('hidden', associations.length !== 0);
+    document.getElementById('association-count').textContent =
+      associations.length ? `Showing ${rows.length} of ${associations.length}` : '';
+
+    if (associations.length && rows.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 6;
+      td.style.textAlign = 'center';
+      td.style.color = 'var(--text-muted)';
+      td.style.padding = '24px';
+      td.textContent = 'No associations match your search.';
+      tr.appendChild(td);
+      associationRowsEl.appendChild(tr);
+      renderPaginationControls('association-pagination', associationPageState, 1, renderAssociations);
+      return;
+    }
+
+    const { pageRows, totalPages } = paginateRows(rows, associationPageState);
+    renderPaginationControls('association-pagination', associationPageState, totalPages, renderAssociations);
+
+    const canManage = canManageAssociations();
+
+    pageRows.forEach(a => {
+      const tr = document.createElement('tr');
+
+      const nameTd = document.createElement('td');
+      nameTd.textContent = a.association || '—';
+      const provinceTd = document.createElement('td');
+      provinceTd.textContent = a.province || '—';
+      const municipalityTd = document.createElement('td');
+      municipalityTd.textContent = a.municipality || '—';
+      const barangayTd = document.createElement('td');
+      barangayTd.textContent = a.barangay || '—';
+
+      const statusTd = document.createElement('td');
+      if (canManage) {
+        const pill = document.createElement('button');
+        pill.className = 'status-pill ' + (a.status === 'active' ? 'available' : 'maintenance');
+        pill.textContent = a.status;
+        pill.title = 'Click to toggle status';
+        pill.addEventListener('click', () => toggleAssociationStatus(a.id, a.status));
+        statusTd.appendChild(pill);
+      } else {
+        const pill = document.createElement('span');
+        pill.className = 'status-pill ' + (a.status === 'active' ? 'available' : 'maintenance');
+        pill.textContent = a.status;
+        pill.style.cursor = 'default';
+        statusTd.appendChild(pill);
+      }
+
+      const actionsTd = document.createElement('td');
+      if (canManage) {
+        actionsTd.className = 'row-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.className = 'row-icon-btn';
+        editBtn.title = 'Edit association';
+        editBtn.innerHTML = '<svg class="edit-icon" viewBox="0 0 20 20" fill="none"><path d="M13.5 3.5l3 3L6 17l-3.5 1L3.5 14.5 13.5 3.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+        editBtn.addEventListener('click', () => openAssociationModal(a));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'row-icon-btn danger';
+        delBtn.title = 'Delete association';
+        delBtn.innerHTML = '<svg class="trash-icon" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M8 6V4.5a1 1 0 011-1h2a1 1 0 011 1V6m2 0v9.5a1 1 0 01-1 1H6a1 1 0 01-1-1V6h10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.3 9v4.5M11.7 9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+        delBtn.addEventListener('click', () => confirmDeleteAssociation(a));
+
+        actionsTd.appendChild(editBtn);
+        actionsTd.appendChild(delBtn);
+      }
+
+      tr.appendChild(nameTd);
+      tr.appendChild(provinceTd);
+      tr.appendChild(municipalityTd);
+      tr.appendChild(barangayTd);
+      tr.appendChild(statusTd);
+      tr.appendChild(actionsTd);
+      associationRowsEl.appendChild(tr);
+    });
+  }
+
+  document.getElementById('association-search').addEventListener('input', (e) => {
+    associationFilter.search = e.target.value.trim().toLowerCase();
+    renderAssociations();
+  });
+  document.getElementById('association-status-filter').addEventListener('change', (e) => {
+    associationFilter.status = e.target.value;
+    renderAssociations();
+  });
+  wireSortableHeaders(
+    document.querySelector('#page-associations .data-table'),
+    associationSort,
+    renderAssociations
+  );
+
+  // ================= MACHINE INVENTORY =================
+  const isElevatedRole = () => currentRole === 'admin' || currentRole === 'superadmin';
+
+  const inventoryModalBackdrop = document.getElementById('inventory-modal-backdrop');
+  const inventoryModalTitle = document.getElementById('inventory-modal-title');
+  const inventoryModalSubmit = document.getElementById('inventory-modal-submit');
+  const inventoryForm = document.getElementById('inventory-form');
+  const inventoryModalClose = document.getElementById('inventory-modal-close');
+  const inventoryModalCancel = document.getElementById('inventory-modal-cancel');
+  const inventoryAssociationSelect = document.getElementById('inventory-association');
+  const inventoryMachinerySelect = document.getElementById('inventory-machinery');
+  const inventoryLockField = document.getElementById('inventory-lock-field');
+  const inventoryLockedCheckbox = document.getElementById('inventory-locked');
+
+  let editingInventoryId = null;
+
+  function populateInventoryDropdowns() {
+    inventoryAssociationSelect.innerHTML = '<option value="">Select association…</option>' +
+      associations.map(a => `<option value="${a.id}">${a.association}</option>`).join('');
+    inventoryMachinerySelect.innerHTML = '<option value="">Select machinery…</option>' +
+      machinery.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+  }
+
+  const INVENTORY_BUCKET = 'inventory-attachments';
+  let editingAttachmentRemoved = false;
+  const inventoryExistingAttachmentEl = document.getElementById('inventory-existing-attachment');
+  const inventoryExistingAttachmentLink = document.getElementById('inventory-existing-attachment-link');
+  const inventoryExistingAttachmentName = document.getElementById('inventory-existing-attachment-name');
+  const inventoryAttachmentInput = document.getElementById('inventory-attachment');
+  const inventoryRemoveAttachmentBtn = document.getElementById('inventory-remove-attachment');
+
+  async function getAttachmentSignedUrl(path, bucket = INVENTORY_BUCKET) {
+    const { data, error } = await supabaseClient
+      .storage
+      .from(bucket)
+      .createSignedUrl(path, 3600);
+    if (error) { console.error(error); return null; }
+    return data.signedUrl;
+  }
+
+  function openInventoryModal(record = null) {
+    if (record && !isElevatedRole() && record.locked) return; // safety net; UI shouldn't allow this anyway
+
+    editingInventoryId = record ? record.id : null;
+    editingAttachmentRemoved = false;
+    inventoryModalTitle.textContent = record ? 'Update Inventory Record' : 'Add Inventory Record';
+    inventoryModalSubmit.textContent = record ? 'Update' : 'Add';
+
+    populateInventoryDropdowns();
+
+    document.getElementById('inventory-document-no').value = record ? record.document_no || '' : '';
+    inventoryAssociationSelect.value = record ? record.association_id : '';
+    inventoryMachinerySelect.value = record ? record.machinery_id : '';
+    document.getElementById('inventory-qty').value = record ? record.qty : '';
+    document.getElementById('inventory-amount').value = record ? record.amount : '';
+    document.getElementById('inventory-target-date').value = record ? record.target_date || '' : '';
+    document.getElementById('inventory-date-delivered').value = record ? record.date_delivered || '' : '';
+    document.getElementById('inventory-status').value = record ? record.status || '' : '';
+    document.getElementById('inventory-remarks').value = record ? record.remarks || '' : '';
+
+    inventoryAttachmentInput.value = '';
+    if (record && record.attachment_path) {
+      inventoryExistingAttachmentEl.classList.remove('hidden');
+      inventoryExistingAttachmentName.textContent = record.attachment_name || 'attachment.pdf';
+      inventoryExistingAttachmentLink.href = '#';
+      getAttachmentSignedUrl(record.attachment_path).then(url => {
+        if (url) inventoryExistingAttachmentLink.href = url;
+      });
+    } else {
+      inventoryExistingAttachmentEl.classList.add('hidden');
+    }
+
+    inventoryLockField.classList.toggle('hidden', !isElevatedRole());
+    inventoryLockedCheckbox.checked = record ? !!record.locked : false;
+
+    inventoryModalBackdrop.classList.remove('hidden');
+  }
+
+  inventoryRemoveAttachmentBtn.addEventListener('click', () => {
+    editingAttachmentRemoved = true;
+    inventoryExistingAttachmentEl.classList.add('hidden');
+  });
+
+  function closeInventoryModal() {
+    inventoryModalBackdrop.classList.add('hidden');
+    editingInventoryId = null;
+    editingAttachmentRemoved = false;
+    inventoryForm.reset();
+    inventoryExistingAttachmentEl.classList.add('hidden');
+  }
+
+  document.getElementById('open-inventory-modal').addEventListener('click', () => openInventoryModal());
+  inventoryModalClose.addEventListener('click', closeInventoryModal);
+  inventoryModalCancel.addEventListener('click', closeInventoryModal);
+  inventoryModalBackdrop.addEventListener('click', (e) => { if (e.target === inventoryModalBackdrop) closeInventoryModal(); });
+
+  async function fetchInventory() {
+    const { data, error } = await supabaseClient
+      .from('machine_inventory')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) { console.error('Error fetching inventory:', error); return; }
+    inventory = data;
+    renderInventory();
+  }
+
+  inventoryForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const document_no = document.getElementById('inventory-document-no').value.trim();
+    const association_id = inventoryAssociationSelect.value;
+    const machinery_id = inventoryMachinerySelect.value;
+    const qty = parseInt(document.getElementById('inventory-qty').value, 10);
+    const amount = parseFloat(document.getElementById('inventory-amount').value);
+    const target_date = document.getElementById('inventory-target-date').value;
+    const date_delivered = document.getElementById('inventory-date-delivered').value;
+    const status = document.getElementById('inventory-status').value;
+    const remarks = document.getElementById('inventory-remarks').value.trim();
+
+    if (!association_id || !machinery_id || !qty || amount === '' || isNaN(amount)) return;
+
+    const payload = {
+      document_no: document_no || null,
+      association_id,
+      machinery_id,
+      qty,
+      amount,
+      target_date: target_date || null,
+      date_delivered: date_delivered || null,
+      status: status || null,
+      remarks: remarks || null
+    };
+
+    if (isElevatedRole()) {
+      payload.locked = inventoryLockedCheckbox.checked;
+    }
+
+    // Handle the optional PDF attachment: a newly chosen file always wins;
+    // otherwise "Remove" clears it; otherwise the existing one is left alone.
+    const file = inventoryAttachmentInput.files[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        showToast('Only PDF files are supported.', 'error');
+        return;
+      }
+      const path = `${currentUser.id}/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabaseClient
+        .storage
+        .from(INVENTORY_BUCKET)
+        .upload(path, file, { contentType: 'application/pdf' });
+
+      if (uploadError) {
+        showToast('Could not upload attachment: ' + uploadError.message, 'error');
+        return;
+      }
+      payload.attachment_path = path;
+      payload.attachment_name = file.name;
+    } else if (editingAttachmentRemoved) {
+      payload.attachment_path = null;
+      payload.attachment_name = null;
+    }
+
+    if (editingInventoryId) {
+      const { error } = await supabaseClient
+        .from('machine_inventory')
+        .update(payload)
+        .eq('id', editingInventoryId);
+
+      if (error) { console.error(error); showToast('Could not update record: ' + error.message, 'error'); }
+      else {
+        showToast('Inventory record updated.');
+        closeInventoryModal();
+        fetchInventory();
+      }
+    } else {
+      const { error } = await supabaseClient
+        .from('machine_inventory')
+        .insert([{ ...payload, created_by: currentUser.id }]);
+
+      if (error) { console.error(error); showToast('Could not add record: ' + error.message, 'error'); }
+      else {
+        showToast('Inventory record added.');
+        closeInventoryModal();
+        fetchInventory();
+      }
+    }
+  });
+
+  function confirmDeleteInventory(record) {
+    const label = record.document_no || 'this record';
+    askConfirm(`Delete "${label}"? This can't be undone.`, async () => {
+      const { error } = await supabaseClient.from('machine_inventory').delete().eq('id', record.id);
+      if (error) { console.error(error); showToast('Could not delete record: ' + error.message, 'error'); }
+      else { showToast('Inventory record deleted.'); fetchInventory(); }
+    });
+  }
+
+  function associationName(id) {
+    const a = associations.find(a => a.id === id);
+    return a ? a.association : '—';
+  }
+
+  function machineryName(id) {
+    const m = machinery.find(m => m.id === id);
+    return m ? m.name : '—';
+  }
+
+  function formatCurrency(amount) {
+    return Number(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function renderInventory() {
+    updateDashboardStats();
+    const enriched = inventory.map(r => ({
+      ...r,
+      associationName: associationName(r.association_id),
+      machineryName: machineryName(r.machinery_id)
+    }));
+
+    let rows = enriched.filter(r => {
+      const haystack = [r.document_no, r.associationName, r.machineryName, r.remarks].join(' ').toLowerCase();
+      const matchesSearch = !inventoryFilter.search || haystack.includes(inventoryFilter.search);
+      const matchesStatus = !inventoryFilter.status || r.status === inventoryFilter.status;
+      return matchesSearch && matchesStatus;
+    });
+    rows = applySort(rows, inventorySort);
+
+    inventoryRowsEl.innerHTML = '';
+    inventoryEmptyEl.classList.toggle('hidden', inventory.length !== 0);
+    document.getElementById('inventory-count').textContent =
+      inventory.length ? `Showing ${rows.length} of ${inventory.length}` : '';
+
+    if (inventory.length && rows.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 12;
+      td.style.textAlign = 'center';
+      td.style.color = 'var(--text-muted)';
+      td.style.padding = '24px';
+      td.textContent = 'No records match your search.';
+      tr.appendChild(td);
+      inventoryRowsEl.appendChild(tr);
+      renderPaginationControls('inventory-pagination', inventoryPageState, 1, renderInventory);
+      return;
+    }
+
+    const { pageRows, totalPages } = paginateRows(rows, inventoryPageState);
+    renderPaginationControls('inventory-pagination', inventoryPageState, totalPages, renderInventory);
+
+    const elevated = isElevatedRole();
+
+    pageRows.forEach(r => {
+      const tr = document.createElement('tr');
+
+      const cell = (text) => {
+        const td = document.createElement('td');
+        td.textContent = text || '—';
+        return td;
+      };
+
+      tr.appendChild(cell(r.document_no));
+      tr.appendChild(cell(r.associationName));
+      tr.appendChild(cell(r.machineryName));
+      tr.appendChild(cell(r.qty));
+      tr.appendChild(cell(r.amount != null ? formatCurrency(r.amount) : null));
+      tr.appendChild(cell(r.target_date));
+      tr.appendChild(cell(r.date_delivered));
+
+      const statusTd = document.createElement('td');
+      if (r.status) {
+        const pill = document.createElement('span');
+        pill.className = 'status-pill ' + (r.status === 'delivered' ? 'available' : r.status === 'cancelled' ? 'maintenance' : 'in-use');
+        pill.textContent = r.status;
+        statusTd.appendChild(pill);
+      } else {
+        statusTd.textContent = '—';
+      }
+      tr.appendChild(statusTd);
+
+      tr.appendChild(cell(r.remarks));
+
+      const attachmentTd = document.createElement('td');
+      if (r.attachment_path) {
+        const link = document.createElement('a');
+        link.className = 'attachment-link';
+        link.href = '#';
+        link.textContent = '📄 View';
+        link.title = r.attachment_name || 'View attachment';
+        link.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const url = await getAttachmentSignedUrl(r.attachment_path);
+          if (url) window.open(url, '_blank', 'noopener');
+          else showToast('Could not open attachment.', 'error');
+        });
+        attachmentTd.appendChild(link);
+      } else {
+        attachmentTd.textContent = '—';
+      }
+      tr.appendChild(attachmentTd);
+
+      const lockTd = document.createElement('td');
+      const lockIcon = document.createElement('span');
+      lockIcon.title = r.locked ? 'Locked' : 'Unlocked';
+      lockIcon.innerHTML = r.locked
+        ? '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="color:var(--rust)"><rect x="5" y="9" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 016 0V9" stroke="currentColor" stroke-width="1.5"/></svg>'
+        : '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="color:var(--text-muted)"><rect x="5" y="9" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 015.7-1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+      lockTd.appendChild(lockIcon);
+      tr.appendChild(lockTd);
+
+      const actionsTd = document.createElement('td');
+      actionsTd.className = 'row-actions';
+      const canEdit = elevated || !r.locked;
+
+      if (canEdit) {
+        const editBtn = document.createElement('button');
+        editBtn.className = 'row-icon-btn';
+        editBtn.title = 'Edit record';
+        editBtn.innerHTML = '<svg class="edit-icon" viewBox="0 0 20 20" fill="none"><path d="M13.5 3.5l3 3L6 17l-3.5 1L3.5 14.5 13.5 3.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+        editBtn.addEventListener('click', () => openInventoryModal(r));
+        actionsTd.appendChild(editBtn);
+      }
+
+      if (elevated) {
+        const delBtn = document.createElement('button');
+        delBtn.className = 'row-icon-btn danger';
+        delBtn.title = 'Delete record';
+        delBtn.innerHTML = '<svg class="trash-icon" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M8 6V4.5a1 1 0 011-1h2a1 1 0 011 1V6m2 0v9.5a1 1 0 01-1 1H6a1 1 0 01-1-1V6h10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.3 9v4.5M11.7 9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+        delBtn.addEventListener('click', () => confirmDeleteInventory(r));
+        actionsTd.appendChild(delBtn);
+      }
+
+      tr.appendChild(actionsTd);
+      inventoryRowsEl.appendChild(tr);
+    });
+  }
+
+  document.getElementById('inventory-search').addEventListener('input', (e) => {
+    inventoryFilter.search = e.target.value.trim().toLowerCase();
+    renderInventory();
+  });
+  document.getElementById('inventory-status-filter').addEventListener('change', (e) => {
+    inventoryFilter.status = e.target.value;
+    renderInventory();
+  });
+  wireSortableHeaders(
+    document.querySelector('#page-inventory .data-table'),
+    inventorySort,
+    renderInventory
+  );
+
+  // ================= AGRI INPUT INVENTORY =================
+  const agriInvModalBackdrop = document.getElementById('agri-inv-modal-backdrop');
+  const agriInvModalTitle = document.getElementById('agri-inv-modal-title');
+  const agriInvModalSubmit = document.getElementById('agri-inv-modal-submit');
+  const agriInvForm = document.getElementById('agri-inv-form');
+  const agriInvModalClose = document.getElementById('agri-inv-modal-close');
+  const agriInvModalCancel = document.getElementById('agri-inv-modal-cancel');
+  const agriInvAssociationSelect = document.getElementById('agri-inv-association');
+  const agriInvAgriInputSelect = document.getElementById('agri-inv-agri-input');
+  const agriInvLockField = document.getElementById('agri-inv-lock-field');
+  const agriInvLockedCheckbox = document.getElementById('agri-inv-locked');
+
+  let editingAgriInvId = null;
+
+  function populateAgriInvDropdowns() {
+    agriInvAssociationSelect.innerHTML = '<option value="">Select association…</option>' +
+      associations.map(a => `<option value="${a.id}">${a.association}</option>`).join('');
+    agriInvAgriInputSelect.innerHTML = '<option value="">Select agri input…</option>' +
+      agriInput.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+  }
+
+  const AGRI_INV_BUCKET = 'agricultural-inventory-attachments';
+  let editingAgriInvAttachmentRemoved = false;
+  const agriInvExistingAttachmentEl = document.getElementById('agri-inv-existing-attachment');
+  const agriInvExistingAttachmentLink = document.getElementById('agri-inv-existing-attachment-link');
+  const agriInvExistingAttachmentName = document.getElementById('agri-inv-existing-attachment-name');
+  const agriInvAttachmentInput = document.getElementById('agri-inv-attachment');
+  const agriInvRemoveAttachmentBtn = document.getElementById('agri-inv-remove-attachment');
+
+  function openAgriInvModal(record = null) {
+    if (record && !isElevatedRole() && record.locked) return; // safety net; UI shouldn't allow this anyway
+
+    editingAgriInvId = record ? record.id : null;
+    editingAgriInvAttachmentRemoved = false;
+    agriInvModalTitle.textContent = record ? 'Update Inventory Record' : 'Add Inventory Record';
+    agriInvModalSubmit.textContent = record ? 'Update' : 'Add';
+
+    populateAgriInvDropdowns();
+
+    document.getElementById('agri-inv-document-no').value = record ? record.document_no || '' : '';
+    agriInvAssociationSelect.value = record ? record.association_id : '';
+    agriInvAgriInputSelect.value = record ? record.agri_input_id : '';
+    document.getElementById('agri-inv-qty').value = record ? record.qty : '';
+    document.getElementById('agri-inv-amount').value = record ? record.amount : '';
+    document.getElementById('agri-inv-target-date').value = record ? record.target_date || '' : '';
+    document.getElementById('agri-inv-date-delivered').value = record ? record.date_delivered || '' : '';
+    document.getElementById('agri-inv-status').value = record ? record.status || '' : '';
+    document.getElementById('agri-inv-remarks').value = record ? record.remarks || '' : '';
+
+    agriInvAttachmentInput.value = '';
+    if (record && record.attachment_path) {
+      agriInvExistingAttachmentEl.classList.remove('hidden');
+      agriInvExistingAttachmentName.textContent = record.attachment_name || 'attachment.pdf';
+      agriInvExistingAttachmentLink.href = '#';
+      getAttachmentSignedUrl(record.attachment_path, AGRI_INV_BUCKET).then(url => {
+        if (url) agriInvExistingAttachmentLink.href = url;
+      });
+    } else {
+      agriInvExistingAttachmentEl.classList.add('hidden');
+    }
+
+    agriInvLockField.classList.toggle('hidden', !isElevatedRole());
+    agriInvLockedCheckbox.checked = record ? !!record.locked : false;
+
+    agriInvModalBackdrop.classList.remove('hidden');
+  }
+
+  agriInvRemoveAttachmentBtn.addEventListener('click', () => {
+    editingAgriInvAttachmentRemoved = true;
+    agriInvExistingAttachmentEl.classList.add('hidden');
+  });
+
+  function closeAgriInvModal() {
+    agriInvModalBackdrop.classList.add('hidden');
+    editingAgriInvId = null;
+    editingAgriInvAttachmentRemoved = false;
+    agriInvForm.reset();
+    agriInvExistingAttachmentEl.classList.add('hidden');
+  }
+
+  document.getElementById('open-agri-inv-modal').addEventListener('click', () => openAgriInvModal());
+  agriInvModalClose.addEventListener('click', closeAgriInvModal);
+  agriInvModalCancel.addEventListener('click', closeAgriInvModal);
+  agriInvModalBackdrop.addEventListener('click', (e) => { if (e.target === agriInvModalBackdrop) closeAgriInvModal(); });
+
+  async function fetchAgriInv() {
+    const { data, error } = await supabaseClient
+      .from('agricultural_inventory')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) { console.error('Error fetching agri input inventory:', error); return; }
+    agriInv = data;
+    renderAgriInv();
+  }
+
+  agriInvForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const document_no = document.getElementById('agri-inv-document-no').value.trim();
+    const association_id = agriInvAssociationSelect.value;
+    const agri_input_id = agriInvAgriInputSelect.value;
+    const qty = parseInt(document.getElementById('agri-inv-qty').value, 10);
+    const amount = parseFloat(document.getElementById('agri-inv-amount').value);
+    const target_date = document.getElementById('agri-inv-target-date').value;
+    const date_delivered = document.getElementById('agri-inv-date-delivered').value;
+    const status = document.getElementById('agri-inv-status').value;
+    const remarks = document.getElementById('agri-inv-remarks').value.trim();
+
+    if (!association_id || !agri_input_id || !qty || amount === '' || isNaN(amount)) return;
+
+    const payload = {
+      document_no: document_no || null,
+      association_id,
+      agri_input_id,
+      qty,
+      amount,
+      target_date: target_date || null,
+      date_delivered: date_delivered || null,
+      status: status || null,
+      remarks: remarks || null
+    };
+
+    if (isElevatedRole()) {
+      payload.locked = agriInvLockedCheckbox.checked;
+    }
+
+    // Handle the optional PDF attachment: a newly chosen file always wins;
+    // otherwise "Remove" clears it; otherwise the existing one is left alone.
+    const agriInvFile = agriInvAttachmentInput.files[0];
+    if (agriInvFile) {
+      if (agriInvFile.type !== 'application/pdf') {
+        showToast('Only PDF files are supported.', 'error');
+        return;
+      }
+      const path = `${currentUser.id}/${Date.now()}_${agriInvFile.name}`;
+      const { error: uploadError } = await supabaseClient
+        .storage
+        .from(AGRI_INV_BUCKET)
+        .upload(path, agriInvFile, { contentType: 'application/pdf' });
+
+      if (uploadError) {
+        showToast('Could not upload attachment: ' + uploadError.message, 'error');
+        return;
+      }
+      payload.attachment_path = path;
+      payload.attachment_name = agriInvFile.name;
+    } else if (editingAgriInvAttachmentRemoved) {
+      payload.attachment_path = null;
+      payload.attachment_name = null;
+    }
+
+    if (editingAgriInvId) {
+      const { error } = await supabaseClient
+        .from('agricultural_inventory')
+        .update(payload)
+        .eq('id', editingAgriInvId);
+
+      if (error) { console.error(error); showToast('Could not update record: ' + error.message, 'error'); }
+      else {
+        showToast('Inventory record updated.');
+        closeAgriInvModal();
+        fetchAgriInv();
+      }
+    } else {
+      const { error } = await supabaseClient
+        .from('agricultural_inventory')
+        .insert([{ ...payload, created_by: currentUser.id }]);
+
+      if (error) { console.error(error); showToast('Could not add record: ' + error.message, 'error'); }
+      else {
+        showToast('Inventory record added.');
+        closeAgriInvModal();
+        fetchAgriInv();
+      }
+    }
+  });
+
+  function confirmDeleteAgriInv(record) {
+    const label = record.document_no || 'this record';
+    askConfirm(`Delete "${label}"? This can't be undone.`, async () => {
+      const { error } = await supabaseClient.from('agricultural_inventory').delete().eq('id', record.id);
+      if (error) { console.error(error); showToast('Could not delete record: ' + error.message, 'error'); }
+      else { showToast('Inventory record deleted.'); fetchAgriInv(); }
+    });
+  }
+
+  function agriInputName(id) {
+    const m = agriInput.find(m => m.id === id);
+    return m ? m.name : '—';
+  }
+
+  function renderAgriInv() {
+    const enriched = agriInv.map(r => ({
+      ...r,
+      associationName: associationName(r.association_id),
+      agriInputName: agriInputName(r.agri_input_id)
+    }));
+
+    let rows = enriched.filter(r => {
+      const haystack = [r.document_no, r.associationName, r.agriInputName, r.remarks].join(' ').toLowerCase();
+      const matchesSearch = !agriInvFilter.search || haystack.includes(agriInvFilter.search);
+      const matchesStatus = !agriInvFilter.status || r.status === agriInvFilter.status;
+      return matchesSearch && matchesStatus;
+    });
+    rows = applySort(rows, agriInvSort);
+
+    agriInvRowsEl.innerHTML = '';
+    agriInvEmptyEl.classList.toggle('hidden', agriInv.length !== 0);
+    document.getElementById('agri-inv-count').textContent =
+      agriInv.length ? `Showing ${rows.length} of ${agriInv.length}` : '';
+
+    if (agriInv.length && rows.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 12;
+      td.style.textAlign = 'center';
+      td.style.color = 'var(--text-muted)';
+      td.style.padding = '24px';
+      td.textContent = 'No records match your search.';
+      tr.appendChild(td);
+      agriInvRowsEl.appendChild(tr);
+      renderPaginationControls('agri-inv-pagination', agriInvPageState, 1, renderAgriInv);
+      return;
+    }
+
+    const { pageRows, totalPages } = paginateRows(rows, agriInvPageState);
+    renderPaginationControls('agri-inv-pagination', agriInvPageState, totalPages, renderAgriInv);
+
+    const elevated = isElevatedRole();
+
+    pageRows.forEach(r => {
+      const tr = document.createElement('tr');
+
+      const cell = (text) => {
+        const td = document.createElement('td');
+        td.textContent = text || '—';
+        return td;
+      };
+
+      tr.appendChild(cell(r.document_no));
+      tr.appendChild(cell(r.associationName));
+      tr.appendChild(cell(r.agriInputName));
+      tr.appendChild(cell(r.qty));
+      tr.appendChild(cell(r.amount != null ? formatCurrency(r.amount) : null));
+      tr.appendChild(cell(r.target_date));
+      tr.appendChild(cell(r.date_delivered));
+
+      const statusTd = document.createElement('td');
+      if (r.status) {
+        const pill = document.createElement('span');
+        pill.className = 'status-pill ' + (r.status === 'delivered' ? 'available' : r.status === 'cancelled' ? 'maintenance' : 'in-use');
+        pill.textContent = r.status;
+        statusTd.appendChild(pill);
+      } else {
+        statusTd.textContent = '—';
+      }
+      tr.appendChild(statusTd);
+
+      tr.appendChild(cell(r.remarks));
+
+      const attachmentTd = document.createElement('td');
+      if (r.attachment_path) {
+        const link = document.createElement('a');
+        link.className = 'attachment-link';
+        link.href = '#';
+        link.textContent = '📄 View';
+        link.title = r.attachment_name || 'View attachment';
+        link.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const url = await getAttachmentSignedUrl(r.attachment_path, AGRI_INV_BUCKET);
+          if (url) window.open(url, '_blank', 'noopener');
+          else showToast('Could not open attachment.', 'error');
+        });
+        attachmentTd.appendChild(link);
+      } else {
+        attachmentTd.textContent = '—';
+      }
+      tr.appendChild(attachmentTd);
+
+      const lockTd = document.createElement('td');
+      const lockIcon = document.createElement('span');
+      lockIcon.title = r.locked ? 'Locked' : 'Unlocked';
+      lockIcon.innerHTML = r.locked
+        ? '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="color:var(--rust)"><rect x="5" y="9" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 016 0V9" stroke="currentColor" stroke-width="1.5"/></svg>'
+        : '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="color:var(--text-muted)"><rect x="5" y="9" width="10" height="7" rx="1.2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9V6.5a3 3 0 015.7-1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+      lockTd.appendChild(lockIcon);
+      tr.appendChild(lockTd);
+
+      const actionsTd = document.createElement('td');
+      actionsTd.className = 'row-actions';
+      const canEdit = elevated || !r.locked;
+
+      if (canEdit) {
+        const editBtn = document.createElement('button');
+        editBtn.className = 'row-icon-btn';
+        editBtn.title = 'Edit record';
+        editBtn.innerHTML = '<svg class="edit-icon" viewBox="0 0 20 20" fill="none"><path d="M13.5 3.5l3 3L6 17l-3.5 1L3.5 14.5 13.5 3.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+        editBtn.addEventListener('click', () => openAgriInvModal(r));
+        actionsTd.appendChild(editBtn);
+      }
+
+      if (elevated) {
+        const delBtn = document.createElement('button');
+        delBtn.className = 'row-icon-btn danger';
+        delBtn.title = 'Delete record';
+        delBtn.innerHTML = '<svg class="trash-icon" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M8 6V4.5a1 1 0 011-1h2a1 1 0 011 1V6m2 0v9.5a1 1 0 01-1 1H6a1 1 0 01-1-1V6h10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.3 9v4.5M11.7 9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+        delBtn.addEventListener('click', () => confirmDeleteAgriInv(r));
+        actionsTd.appendChild(delBtn);
+      }
+
+      tr.appendChild(actionsTd);
+      agriInvRowsEl.appendChild(tr);
+    });
+  }
+
+  document.getElementById('agri-inv-search').addEventListener('input', (e) => {
+    agriInvFilter.search = e.target.value.trim().toLowerCase();
+    renderAgriInv();
+  });
+  document.getElementById('agri-inv-status-filter').addEventListener('change', (e) => {
+    agriInvFilter.status = e.target.value;
+    renderAgriInv();
+  });
+  wireSortableHeaders(
+    document.querySelector('#page-agri-inv .data-table'),
+    agriInvSort,
+    renderAgriInv
+  );
+
+  // ================= USERS (admin/superadmin) =================
+
+  // A second, isolated Supabase client used ONLY for creating new accounts.
+  // It never persists its session and uses a separate storage key, so
+  // calling auth.signUp() here can't overwrite or interfere with the
+  // admin's own logged-in session on the main `supabaseClient`.
+  const inviteClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, storageKey: 'sb-invite-helper' }
+  });
+
+  const userModalBackdrop = document.getElementById('user-modal-backdrop');
+  const userForm = document.getElementById('user-form');
+  const userModalClose = document.getElementById('user-modal-close');
+  const userModalCancel = document.getElementById('user-modal-cancel');
+  const openUserModalBtn = document.getElementById('open-user-modal');
+  const newUserRoleSelect = document.getElementById('new-user-role');
+
+  function openUserModal() {
+    userForm.reset();
+    // Admins can only create plain "user" accounts — they can't grant
+    // admin/superadmin, mirroring what they're allowed to do afterward.
+    if (currentRole === 'admin') {
+      newUserRoleSelect.innerHTML = '<option value="user">User</option>';
+    } else {
+      newUserRoleSelect.innerHTML = `
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+        <option value="superadmin">Superadmin</option>`;
+    }
+    userModalBackdrop.classList.remove('hidden');
+  }
+
+  function closeUserModal() {
+    userModalBackdrop.classList.add('hidden');
+    userForm.reset();
+  }
+
+  openUserModalBtn.addEventListener('click', openUserModal);
+  userModalClose.addEventListener('click', closeUserModal);
+  userModalCancel.addEventListener('click', closeUserModal);
+  userModalBackdrop.addEventListener('click', (e) => { if (e.target === userModalBackdrop) closeUserModal(); });
+
+  userForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fullName = document.getElementById('new-user-full-name').value.trim();
+    const email = document.getElementById('new-user-email').value.trim();
+    const password = document.getElementById('new-user-password').value;
+    const role = newUserRoleSelect.value;
+
+    const { data, error } = await inviteClient.auth.signUp({ email, password });
+
+    if (error) {
+      showToast('Could not create user: ' + error.message, 'error');
+      return;
+    }
+
+    // The database trigger already created a profile with role "user".
+    // Bump the role and/or set the name if provided.
+    if (data.user && (role !== 'user' || fullName)) {
+      const patch = {};
+      if (role !== 'user') patch.role = role;
+      if (fullName) patch.full_name = fullName;
+
+      const { error: patchError } = await supabaseClient
+        .from('profiles')
+        .update(patch)
+        .eq('id', data.user.id);
+      if (patchError) {
+        showToast('User created, but some details could not be saved: ' + patchError.message, 'error');
+        closeUserModal();
+        fetchUsers();
+        return;
+      }
+    }
+
+    showToast('User created — they must confirm their email before logging in.');
+    closeUserModal();
+    fetchUsers();
+  });
+
+  async function fetchUsers() {
+    if (!(currentRole === 'admin' || currentRole === 'superadmin')) return;
+
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .select('id, email, role, disabled, full_name')
+      .order('email', { ascending: true });
+
+    if (error) { console.error('Error fetching users:', error); return; }
+    users = data;
+    renderUsers();
+  }
+
+  async function updateUserRole(id, newRole) {
+    const { error } = await supabaseClient.from('profiles').update({ role: newRole }).eq('id', id);
+    if (error) { showToast('Could not update role: ' + error.message, 'error'); }
+    else { showToast('Role updated.'); }
+    fetchUsers();
+  }
+
+  async function toggleUserDisabled(id, current) {
+    const { error } = await supabaseClient.from('profiles').update({ disabled: !current }).eq('id', id);
+    if (error) { showToast('Could not update status: ' + error.message, 'error'); }
+    else { showToast(current ? 'User reactivated.' : 'User deactivated.'); }
+    fetchUsers();
+  }
+
+  async function updateUserFullName(id, fullName) {
+    const { error } = await supabaseClient
+      .from('profiles')
+      .update({ full_name: fullName || null })
+      .eq('id', id);
+    if (error) { showToast('Could not update name: ' + error.message, 'error'); }
+    else {
+      showToast('Name updated.');
+      if (id === currentUser.id) {
+        currentFullName = fullName;
+        updateSidebarIdentity();
+      }
+    }
+    fetchUsers();
+  }
+
+  function makeInlineEditableText(value, onSave, readOnly = false) {
+    if (readOnly) {
+      const span = document.createElement('span');
+      span.textContent = value || '—';
+      return span;
+    }
+
+    const span = document.createElement('span');
+    span.className = 'editable-text';
+    span.textContent = value || '—';
+    span.title = 'Click to edit';
+    span.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = value || '';
+      input.style.width = '100%';
+      input.style.font = 'inherit';
+      input.style.border = '2px solid var(--mustard)';
+      input.style.borderRadius = '4px';
+      input.style.padding = '4px 6px';
+      span.replaceWith(input);
+      input.focus();
+
+      const commit = () => {
+        const newVal = input.value.trim();
+        input.replaceWith(span);
+        if (newVal !== (value || '')) onSave(newVal);
+      };
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') input.blur();
+        if (e.key === 'Escape') { input.value = value || ''; input.blur(); }
+      });
+    });
+    return span;
+  }
+
+  function renderUsers() {
+    updateDashboardStats();
+    let rows = users.filter(u => {
+      const matchesSearch = !usersFilter.search ||
+        (u.email || '').toLowerCase().includes(usersFilter.search) ||
+        (u.full_name || '').toLowerCase().includes(usersFilter.search);
+      const matchesRole = !usersFilter.role || u.role === usersFilter.role;
+      return matchesSearch && matchesRole;
+    });
+    rows = applySort(rows, usersSort);
+
+    usersRowsEl.innerHTML = '';
+    usersEmptyEl.classList.toggle('hidden', users.length !== 0);
+    document.getElementById('users-count').textContent =
+      users.length ? `Showing ${rows.length} of ${users.length}` : '';
+
+    if (users.length && rows.length === 0) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 5;
+      td.style.textAlign = 'center';
+      td.style.color = 'var(--text-muted)';
+      td.style.padding = '24px';
+      td.textContent = 'No users match your search.';
+      tr.appendChild(td);
+      usersRowsEl.appendChild(tr);
+      renderPaginationControls('users-pagination', usersPageState, 1, renderUsers);
+      return;
+    }
+
+    const { pageRows, totalPages } = paginateRows(rows, usersPageState);
+    renderPaginationControls('users-pagination', usersPageState, totalPages, renderUsers);
+
+    pageRows.forEach(u => {
+      const tr = document.createElement('tr');
+      const canManage = currentRole === 'superadmin' || (currentRole === 'admin' && u.role === 'user');
+      const isSelf = u.id === currentUser.id;
+      const canEditName = canManage || isSelf;
+
+      const nameTd = document.createElement('td');
+      nameTd.appendChild(makeInlineEditableText(u.full_name, (v) => updateUserFullName(u.id, v), !canEditName));
+
+      const emailTd = document.createElement('td');
+      emailTd.textContent = u.email || '(no email)';
+
+      const roleTd = document.createElement('td');
+      if (currentRole === 'superadmin') {
+        const select = document.createElement('select');
+        select.className = 'role-select';
+        ['user', 'admin', 'superadmin'].forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r;
+          opt.textContent = r;
+          if (r === u.role) opt.selected = true;
+          select.appendChild(opt);
+        });
+        select.addEventListener('change', () => updateUserRole(u.id, select.value));
+        roleTd.appendChild(select);
+      } else {
+        const badge = document.createElement('span');
+        badge.className = 'role-badge ' + u.role;
+        badge.style.color = u.role === 'user' ? 'var(--ink)' : '';
+        badge.style.background = u.role === 'user' ? 'var(--paper-line)' : '';
+        badge.textContent = u.role;
+        roleTd.appendChild(badge);
+      }
+
+      const statusTd = document.createElement('td');
+      const statusPill = document.createElement('span');
+      statusPill.className = 'disabled-pill ' + (u.disabled ? 'inactive' : 'active');
+      statusPill.textContent = u.disabled ? 'Deactivated' : 'Active';
+      statusTd.appendChild(statusPill);
+
+      const actionsTd = document.createElement('td');
+      actionsTd.className = 'row-actions';
+
+      const resetBtn = document.createElement('button');
+      resetBtn.className = 'row-icon-btn';
+      resetBtn.title = 'Send password reset email';
+      resetBtn.innerHTML = '<svg class="edit-icon" viewBox="0 0 20 20" fill="none"><rect x="3" y="6" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 6.8L10 11.5l6.5-4.7" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+      resetBtn.addEventListener('click', () => {
+        askConfirm(`Send a password reset email to ${u.email}?`, async () => {
+          const { error } = await supabaseClient.auth.resetPasswordForEmail(u.email, {
+            redirectTo: window.location.origin + window.location.pathname
+          });
+          if (error) showToast('Could not send reset email: ' + error.message, 'error');
+          else showToast('Reset email sent to ' + u.email + '.');
+        });
+      });
+      actionsTd.appendChild(resetBtn);
+
+      if (u.disabled) {
+        const reactivateBtn = document.createElement('button');
+        reactivateBtn.className = 'action-btn';
+        reactivateBtn.textContent = 'Reactivate';
+        reactivateBtn.disabled = !canManage;
+        reactivateBtn.title = !canManage ? 'Not permitted' : '';
+        reactivateBtn.addEventListener('click', () => toggleUserDisabled(u.id, u.disabled));
+        actionsTd.appendChild(reactivateBtn);
+      } else {
+        const delBtn = document.createElement('button');
+        delBtn.className = 'row-icon-btn danger';
+        delBtn.title = isSelf
+          ? "You can't deactivate your own account"
+          : (!canManage ? 'Not permitted' : 'Deactivate user');
+        delBtn.disabled = !canManage || isSelf;
+        delBtn.innerHTML = '<svg class="trash-icon" viewBox="0 0 20 20" fill="none"><path d="M4 6h12M8 6V4.5a1 1 0 011-1h2a1 1 0 011 1V6m2 0v9.5a1 1 0 01-1 1H6a1 1 0 01-1-1V6h10z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.3 9v4.5M11.7 9v4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+        delBtn.addEventListener('click', () => {
+          askConfirm(`Deactivate ${u.email}? They'll immediately lose access until reactivated.`, async () => {
+            await toggleUserDisabled(u.id, u.disabled);
+          });
+        });
+        actionsTd.appendChild(delBtn);
+      }
+
+      tr.appendChild(nameTd);
+      tr.appendChild(emailTd);
+      tr.appendChild(roleTd);
+      tr.appendChild(statusTd);
+      tr.appendChild(actionsTd);
+      usersRowsEl.appendChild(tr);
+    });
+  }
+
+  document.getElementById('users-search').addEventListener('input', (e) => {
+    usersFilter.search = e.target.value.trim().toLowerCase();
+    renderUsers();
+  });
+  document.getElementById('users-role-filter').addEventListener('change', (e) => {
+    usersFilter.role = e.target.value;
+    renderUsers();
+  });
+  wireSortableHeaders(
+    document.querySelector('#page-users .data-table'),
+    usersSort,
+    renderUsers
+  );
+</script>
+</body>
+</html>
